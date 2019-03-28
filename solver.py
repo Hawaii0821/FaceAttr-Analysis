@@ -16,7 +16,7 @@ class Solver(object):
     
     def __init__(self, epoches = 100, batch_size = 64, learning_rate = 0.1,
       model_type = "Resnet18", optim_type = "SGD", momentum = 0.9, pretrained = True,
-      selected_attrs=[], image_dir ="./Img", attr_path = "./Anno/list_attr_celeba.txt"):
+      selected_attrs=[], image_dir ="./Img", attr_path = "./Anno/list_attr_celeba.txt", log_dir = "./log", use_tensorboard = True):
 
         self.epoches = epoches 
         self.batch_size = batch_size
@@ -33,6 +33,8 @@ class Solver(object):
         self.create_optim(optim_type)
         self.train_loader = None
         self.validate_loader = None
+        self.log_dir = log_dir
+        self.use_tensorboard = use_tensorboard
         #self.test_loader = None
 
 
@@ -51,6 +53,12 @@ class Solver(object):
             num_ftrs = self.model.fc.in_features
             self.model.fc = nn.Linear(num_ftrs, 2 * len(self.selected_attrs))
         """
+
+    def build_tensorboard(self):
+        """Build a tensorboard logger."""
+        from logger import Logger
+        self.logger = Logger(self.log_dir)
+
 
     def create_optim(self, optim_type):
         if optim_type == "Adam":
@@ -96,7 +104,7 @@ class Solver(object):
         #plt.show()
 
 
-    def train(self):
+    def train(self, epoch):
         """
         Return: the average trainging loss value of this epoch
         """
@@ -112,6 +120,7 @@ class Solver(object):
 
         temp_loss = 0.0
         
+        loss_log = {}
         # start to train in 1 epoch
         for batch_idx, samples in enumerate(self.train_loader):
             print("training batch_idx : {}".format(batch_idx))
@@ -125,16 +134,24 @@ class Solver(object):
             # call backward function of the total loss
             loss_dict = {}
             total_loss = None 
+
             for attr in self.selected_attrs:
                 loss_dict[attr] = self.criterion(outputs, torch.max(labels[attr], 1)[1])
                 total_loss += loss_dict[attr]
-
+                loss_log[attr] += loss_dict[attr].item()
             total_loss.backward()
 
             self.optim.step()
 
             temp_loss += total_loss.item()
-           
+
+            
+        # log the training info 
+        for attr in self.selected_attrs:
+            loss_log[attr] /= batch_idx + 1
+        if self.use_tensorboard:
+            for tag, value in loss_log.items():
+                self.logger.scalar_summary(tag, value, epoch+1)   
         
         return temp_loss/(batch_idx + 1)
         
@@ -175,8 +192,8 @@ class Solver(object):
         This function is to combine the train and evaluate, finally getting a best model.
         """
         train_losses = []
-        eval_accs = []
-        eval_losses = []
+        #eval_accs = []
+        #eval_losses = []
         
         best_model_wts = copy.deepcopy(self.model.state_dict())
         best_acc = 0.0

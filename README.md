@@ -11,8 +11,9 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 |analysis_attr.py | It reflects the relationship between positive samples and negetive samples in CelebA.|
 |solver.py|The file has many functions like initializing, training and evaluating model.|
 |main.py| The entry file of project that owns some important variables.|
+| logger.py | Use tensorboardX for visualization. |
 
-## Analysis of the task
+## Paper Note
 ### Opportunity
 * Attributes are especially  useful in modeling intra-category variations such as fine-grained classification.
 * Face retrieval.
@@ -24,4 +25,11 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 * Multiple classes classification.
 ### Possible Solution
 * Semantic segmentation to offer facial attributes localization cues in the form of semantic segmentation that decompose the spatial domain of an image into mutally exclusive semantic regions.
-* Try to leverages facial parts locations for better attribute prediction. Generate a facial abstraction image which contains both local facial parts and facial texture information. . 
+* Try to leverages facial parts locations for better attribute prediction. Generate a facial abstraction image which contains both local facial parts and facial texture information. 
+
+### Paper list
+1. Improving Facial Attribute Prediction using Semantic Segmentation. [Arxiv](https://arxiv.org/abs/1704.08740)
+2. Harnessing Synthesized Abstraction Images to Improve Facial Attribute
+Recognition. [IJCAI](https://www.ijcai.org/proceedings/2018/102)
+
+
