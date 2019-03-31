@@ -1,8 +1,3 @@
-"""
-Author: Yihao Qiu
-Date: 2019-03-16
-Description: Read the attributes and analysis the distribution of Celeba dataset.
-"""
 import matplotlib.pyplot as plt 
 
 attr_name = [""]

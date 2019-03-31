@@ -30,12 +30,12 @@ class FeatureClassfier(nn.Module):
 
         self.attrs_num = len(selected_attrs)
         self.selected_attrs = selected_attrs
-
+        output_dim = len(selected_attrs)
         """build full connect layers for every attribute"""
         self.fc_set = {}
 
-        fc = nn.Sequential(
-            nn.Linear(2048, 512),
+        self.fc = nn.Sequential(
+            nn.Linear(512, 512),
             nn.ReLU(True),
             nn.Dropout(p=0.5),
             nn.Linear(512, 128),
@@ -44,17 +44,27 @@ class FeatureClassfier(nn.Module):
             nn.Linear(128, output_dim),
         )
 
+        self.sigmoid = nn.Sigmoid()
+
+        """
         for attr in selected_attrs:
             self.fc_set[attr] = fc 
             #self.fc_set[attr].to(device)
-    
+        """
+
     def forward(self, x):
-        result_set = {}
+        #result_set = []
         x = x.view(x.size(0), -1)  # flatten
+        """
         for attr in self.selected_attrs:
+            print(self.fc_set[attr])
             res = self.fc_set[attr](x)
-            result_set[attr] = res
-        return result_set
+            result_set.append(res)
+        """
+        res = self.fc(x)
+        for i in range(len(self.selected_attrs)):
+            res[i] = self.sigmoid(res[i])
+        return res
 
 
 """

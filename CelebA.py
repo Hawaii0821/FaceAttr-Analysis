@@ -1,8 +1,6 @@
 import torch
 import torchvision
-#from torchvision import transforms, utils
 import pandas as pd
-#from skimage import io, transform
 from torch.utils import data
 import os
 import random
@@ -10,9 +8,9 @@ from PIL import Image
 
 
 # 根据Eval文件里头的数据划分,表示该数据集从上到下划分的终点
-train_end_index = 256 + 1
-validate_end_index = 320 + 1
-test_end_index = 384 + 1
+train_end_index = 2048 + 1
+validate_end_index = 3072 + 1
+test_end_index = 3074 + 1
 
 class CelebA(data.Dataset):
     
@@ -73,14 +71,14 @@ class CelebA(data.Dataset):
             filename = split[0]
             values = split[1:]
 
-            label = {}
+            label = []
             # 将结果按属性进行保存，作为一个字典标签
             for attr_name in self.selected_attrs:
                 idx = self.attr2idx[attr_name]
                 val = int(values[idx])
                 if val == -1:
                     val = 0
-                label[attr_name] = torch.LongTensor(val)
+                label.append(val)
 
             # 根据行索引的位置来划分训练集，验证集，测试集
             if (i+1) < train_end_index:
@@ -91,6 +89,7 @@ class CelebA(data.Dataset):
                 self.test_dataset.append([filename, label])
             elif i >= test_end_index:
                 break 
+                
         print('Finished preprocessing the CelebA data set...')
 
 

@@ -9,6 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import copy
 from CelebA import get_loader
+import torch.nn.functional as F
+
 from FaceAttr_baseline_model import FaceAttrModel
 
 
@@ -16,7 +18,8 @@ class Solver(object):
     
     def __init__(self, epoches = 100, batch_size = 64, learning_rate = 0.1,
       model_type = "Resnet18", optim_type = "SGD", momentum = 0.9, pretrained = True,
-      selected_attrs=[], image_dir ="./Img", attr_path = "./Anno/list_attr_celeba.txt", log_dir = "./log", use_tensorboard = True):
+      selected_attrs=[], image_dir ="./Img", attr_path = "./Anno/list_attr_celeba.txt", log_dir = "./log", 
+      use_tensorboard = True, attr_loss_weight = [], attr_threshold = []):
 
         self.epoches = epoches 
         self.batch_size = batch_size
@@ -35,13 +38,15 @@ class Solver(object):
         self.validate_loader = None
         self.log_dir = log_dir
         self.use_tensorboard = use_tensorboard
+        self.attr_loss_weight = torch.tensor(attr_loss_weight)
+        self.attr_threshold = attr_threshold
         #self.test_loader = None
 
 
     def build_model(self, model_type, pretrained):
         """Here should change the model's structure""" 
 
-        self.model = FaceAttrModel(model_type, pretrained, self.selected_attrs)
+        self.model = FaceAttrModel(model_type, pretrained, self.selected_attrs).to(self.device)
 
         """
         if model_type == "Resnet18":
@@ -96,19 +101,44 @@ class Solver(object):
         x = np.array([i for i in range(len(ys))])
         y = np.array(ys)
         plt.figure()
-        plt.plot(x, y, c='b', maker = 'o')
+        plt.plot(x, y, c='b')
         plt.axis()
         plt.title('{} curve'.format(title))
         plt.xlabel('epoch')
         plt.ylabel('{} value'.format(title))
-        #plt.show()
+        plt.show()
+
+    # self define loss function
+    def multi_loss_fn(self, input, target):
+        """
+        input shape: tensor(batch_size * [attr num...]] 
+        target shape: [tensor([... * batch_size]) * attrnum]
+        description:
+        * input is a output of model [a1, a2 .... ak]
+        * target is also a label [b1, b2 ... bk]
+        * loss = \sum_i{(ai - bi)**2}
+        """
+        """
+        loss = torch.tensor([0.0])
+        for i in range(self.batch_size):
+            for j in range(len(self.selected_attrs)):
+                loss +=  (input[i][j] - target[j].to(self.device)[i])**2
+        """
+        #cost_matrix = [1 for i in range(len(self.selected_attrs))]
+        total_loss = torch.tensor([0.0])
+        for i in range(self.batch_size):
+            attr_list = []
+            for j, attr in enumerate(self.selected_attrs):
+                attr_list.append(target[j][i])
+            attr_tensor = torch.tensor(attr_list)
+            total_loss += F.binary_cross_entropy_with_logits(input[i],  attr_tensor.type(torch.FloatTensor).to(self.device), weight=self.attr_loss_weight) 
+        return total_loss
 
 
     def train(self, epoch):
         """
         Return: the average trainging loss value of this epoch
         """
-
         self.model.train()
         self.set_transform("train")
 
@@ -122,10 +152,12 @@ class Solver(object):
         
         loss_log = {}
         # start to train in 1 epoch
+        #print(self.train_loader)
         for batch_idx, samples in enumerate(self.train_loader):
             print("training batch_idx : {}".format(batch_idx))
             images, labels = samples["image"], samples["label"]
-            images, labels = images.to(self.device), labels.to(labels)
+            #print(images, labels)
+            images= images.to(self.device)
             outputs = self.model(images)
             self.optim.zero_grad()
             
@@ -134,31 +166,35 @@ class Solver(object):
             # call backward function of the total loss
             loss_dict = {}
             total_loss = None 
-
-            for attr in self.selected_attrs:
-                loss_dict[attr] = self.criterion(outputs, torch.max(labels[attr], 1)[1])
+            """
+            for i, attr in enumerate(self.selected_attrs):
+                print(len(outputs[i]), len(labels[i]))
+                loss_dict[attr] = self.criterion(outputs[i], labels[i].to(self.device))
                 total_loss += loss_dict[attr]
-                loss_log[attr] += loss_dict[attr].item()
+                loss_log[attr] += loss_dict[attr]
+            """
+            #total_loss = self.criterion(outputs[0], labels)
+            total_loss = self.multi_loss_fn(outputs, labels)
             total_loss.backward()
 
             self.optim.step()
-
             temp_loss += total_loss.item()
-
             
         # log the training info 
+        """
         for attr in self.selected_attrs:
             loss_log[attr] /= batch_idx + 1
         if self.use_tensorboard:
             for tag, value in loss_log.items():
                 self.logger.scalar_summary(tag, value, epoch+1)   
-        
+        """
         return temp_loss/(batch_idx + 1)
         
     def evaluate(self):
         """
         Return: correct_dict: save the average predicting accuracy of every attribute 
         """
+        
         self.model.eval()
         self.set_transform("validate")
         if self.validate_loader == None:
@@ -169,23 +205,32 @@ class Solver(object):
             print("validate_dataset: {}".format(len(self.validate_loader.dataset)))
         
         correct_dict = {}
+        for attr in self.selected_attrs:
+            correct_dict[attr] = 0
         with torch.no_grad():
             for batch_idx, samples in enumerate(self.validate_loader):
                 images, labels = samples["image"], samples["label"]
-                images, labels = images.to(self.device), labels.to(self.device)
+                images = images.to(self.device)
                 outputs = self.model(images)
 
-                # get the accuracys of the current batch 
-                for attr in self.selected_attrs:
-                    predicted = outputs[attr].data.max(1, keepdim = True)[1]
-                    correct_dict[attr] += (predicted == labels[attr]).sum().detach().numpy()
-            
+                # get the accuracys of the current batch
+                for i in range(self.batch_size):
+                    for j, attr in enumerate(self.selected_attrs):
+                        pred = outputs[i].data[j]
+                        pred = 1 if pred > self.attr_threshold[j] else 0
+                        if pred == labels[j][i]:
+                            correct_dict[attr] = correct_dict[attr] + 1
+                """  
+                for i, attr in enumerate(self.selected_attrs):
+                    predicted = outputs[i].data.mmax(1, keepdim = True)[1]
+                    correct_dict[attr] += (predicted == labels[i]).sum().detach().numpy()
+                """
+
             # get the average accuracy
             for attr in self.selected_attrs:
                 correct_dict[attr] = correct_dict[attr] * 100 / len(self.validate_loader.dataset)
             
         return correct_dict
-
 
     def fit(self):
         """
@@ -203,7 +248,7 @@ class Solver(object):
             eval_acc_dict[attr] = []
 
         for epoch in range(self.epoches):
-            running_loss = self.train()
+            running_loss = self.train(epoch)
             print("{}/{} Epoch:  in training process，average loss: {:.4f}".format(epoch + 1, self.epoches, running_loss))
             average_acc_dict = self.evaluate()
             print("{}/{} Epoch: in evaluating process，average accuracy:{}".format(epoch + 1, self.epoches, average_acc_dict))
@@ -220,14 +265,14 @@ class Solver(object):
             if average_acc > best_acc: 
                 best_acc = average_acc
                 best_model_wts = copy.deepcopy(self.model.state_dict())
-
+    
         # show the curve of trainging loss in every epoch
-        self.show_curve(train_losses, "loss in train")
-        plt.show() 
+        #self.show_curve(train_losses, "loss in train")
+        #plt.show() 
 
         # show the curve of evaluating accuracy of every attribute in every epoch
         for attr in self.selected_attrs:
-            self.show_curve(eval_acc_dict, "accuracy in evaluate")
+           self.show_curve(eval_acc_dict[attr], "accuracy in evaluate")
 
         # load best model weights
         model_save_path = "./" + self.model_type + "-best_model.pt"
