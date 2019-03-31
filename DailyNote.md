@@ -13,7 +13,7 @@
 # Week4 (19.03.23 ~ 19.03.24)
 ## Paper Note
 ### Opportunity
-* Attributes are especially  useful in modeling intra-category variations such as fine-grained classification.
+* Attributes are especially useful in modeling intra-category variations such as fine-grained classification.
 * Face retrieval.
 * Intelligent retail on Big Data of customer styles.
 * Face recognition.
