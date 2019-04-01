@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt 
-
-attr_name = [""]
+import pandas 
 
 # calculate the number of positive and negetive samples of each attribute
 def stat_attr(file_path):
@@ -37,4 +36,22 @@ def stat_attr(file_path):
     return pos_samples, neg_samples
 
 
-stat_attr("./Anno/list_attr_celeba.txt")
+# every row has 5 attributes.
+all_attrs = ['5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Eyes', 'Bald', 
+            'Bangs', 'Big_Lips', 'Big_Nose','Black_Hair', 'Blond_Hair',
+            'Blurry', 'Brown_Hair', 'Bushy_Eyebrows', 'Chubby', 'Double_Chin', 
+            'Eyeglasses', 'Goatee', 'Gray_Hair', 'Heavy_Makeup', 'High_Cheekbones', 
+            'Male', 'Mouth_Slightly_Open', 'Mustache', 'Narrow_Eyes', 'No_Beard', 
+            'Oval_Face', 'Pale_Skin', 'Pointy_Nose', 'Receding_Hairline', 'Rosy_Cheeks', 
+            'Sideburns', 'Smiling', 'Straight_Hair', 'Wavy_Hair', 'Wearing_Earrings', 
+            'Wearing_Hat','Wearing_Lipstick', 'Wearing_Necklace', 'Wearing_Necktie', 'Young' 
+]
+
+
+pos, neg = stat_attr("../CelebA/Anno/list_attr_celeba.txt")
+
+attr_dict = {}
+with open('sample_num.csv', 'w') as f:
+    f.write("attribute,positive sample,negative sample\n")
+    for i, attr in enumerate(all_attrs):
+        f.write(attr + ',' + str(pos[i]) + "," + str(neg[i]) + '\n')

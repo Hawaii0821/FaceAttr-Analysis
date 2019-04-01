@@ -7,14 +7,13 @@ import random
 from PIL import Image
 
 
-train_end_index = 2048 + 1
-validate_end_index = 3072 + 1
-test_end_index = 3074 + 1
+train_end_index = 162770 + 1
+validate_end_index = 182638 + 1
+test_end_index = 202599 + 1 # make no sense temporialy.
 
 class CelebA(data.Dataset):
     
     # each image is  218*178;
-
     def __init__(self, attr_file, selected_attrs, image_folder,
                 transform, mode = "train"):
 
@@ -71,7 +70,7 @@ class CelebA(data.Dataset):
             values = split[1:]
 
             label = []
-            # 将结果按属性进行保存，作为一个字典标签
+            # save the attributes into a dict
             for attr_name in self.selected_attrs:
                 idx = self.attr2idx[attr_name]
                 val = int(values[idx])
@@ -79,7 +78,7 @@ class CelebA(data.Dataset):
                     val = 0
                 label.append(val)
 
-            # 根据行索引的位置来划分训练集，验证集，测试集
+            # split the data by index.
             if (i+1) < train_end_index:
                 self.train_dataset.append([filename, label])
             elif (i + 1) < validate_end_index:
@@ -93,7 +92,7 @@ class CelebA(data.Dataset):
 
 
     # ---------------------------------------------------------------#
-    # 以下函数写完发现暂时用不到。。。。可能后续可以自己实现一个人脸检测吧 #
+    # 以下函数写完发现暂时用不到。。。。                                #
     # ---------------------------------------------------------------#
     def read_bbox_file(self, bbox_file):
         with open(bbox_file, 'r') as f:

@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import copy
 from CelebA import get_loader
 import torch.nn.functional as F
-
+from tensorboardX import SummaryWriter
 from FaceAttr_baseline_model import FaceAttrModel
 
 
@@ -108,6 +108,7 @@ class Solver(object):
         plt.xlabel('epoch')
         plt.ylabel('{} value'.format(title))
         plt.show()
+        plt.savefig("{}.jpg".format(title))
 
     # self define loss function
     def multi_loss_fn(self, input, target):
@@ -273,7 +274,7 @@ class Solver(object):
 
         # show the curve of evaluating accuracy of every attribute in every epoch
         for attr in self.selected_attrs:
-           self.show_curve(eval_acc_dict[attr], "accuracy in evaluate")
+           self.show_curve(eval_acc_dict[attr], attr + "-accuracy")
 
         # load best model weights
         model_save_path = "./" + self.model_type + "-best_model.pt"
