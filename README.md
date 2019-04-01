@@ -16,3 +16,10 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 ## Dependency
 > pip install -r requirements.txt 
 
+## Todo
+-[] Visualization with tensorboard.
+-[] Try more famous models, such as ResNet50, ResNet101, DenseNe, ResNeXt, SENet.
+-[] Video stream monitor and real-time analysis.
+-[] Customize the network structure.
+-[] Parse the input script command.
+-[] Search for the appropriate prediction threshold for each attribute.
