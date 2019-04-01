@@ -8,7 +8,7 @@ batch_size = 64
 
 learning_rate = 0.0001
 
-model_type = "Resnet18"
+model_type = "Resnet50"
 
 optim_type = "SGD"
 
@@ -19,9 +19,24 @@ pretrained = True
 
 
 # -------------- Attribute configuration --------- #
-selected_attrs = ["Attractive", "Arched_Eyebrows"]
-attr_loss_weight = [1, 0.8]
-attr_threshold = [0.6, 0.5]
+
+# every row has 5 attributes.
+all_attrs = ['5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Eyes', 'Bald', 
+            'Bangs', 'Big_Lips', 'Big_Nose','Black_Hair', 'Blond_Hair',
+            'Blurry', 'Brown_Hair', 'Bushy_Eyebrows', 'Chubby', 'Double_Chin', 
+            'Eyeglasses', 'Goatee', 'Gray_Hair', 'Heavy_Makeup', 'High_Cheekbones', 
+            'Male', 'Mouth_Slightly_Open', 'Mustache', 'Narrow_Eyes', 'No_Beard', 
+            'Oval_Face', 'Pale_Skin', 'Pointy_Nose', 'Receding_Hairline', 'Rosy_Cheeks', 
+            'Sideburns', 'Smiling', 'Straight_Hair', 'Wavy_Hair', 'Wearing_Earrings', 
+            'Wearing_Hat','Wearing_Lipstick', 'Wearing_Necklace', 'Wearing_Necktie', 'Young' 
+]
+
+attr_nums = [1, 2, 3,4,5,] 
+attr_loss_weight = [1, 0.8, 0.7]  
+attr_threshold = [0.6, 0.5, 0.7] 
+selected_attrs = []
+for num in attr_nums:
+    selected_attrs.append(num)
 
 
 # ------------- Path setting --------------------- #

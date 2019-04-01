@@ -40,6 +40,7 @@ class Solver(object):
         self.use_tensorboard = use_tensorboard
         self.attr_loss_weight = torch.tensor(attr_loss_weight)
         self.attr_threshold = attr_threshold
+        self.LOADED = False
         #self.test_loader = None
 
 
@@ -281,10 +282,19 @@ class Solver(object):
         
 
     def predict(self, image):
-        self.model.load_state_dict(torch.load("./" + self.model_type + "-best_model.py"))
+        if not self.LOADED:
+            # load the best model dict.
+            self.model.load_state_dict(torch.load("./" + self.model_type + "-best_model.py"))
+            self.LOADED = True
+
         self.model.eval()
         with torch.no_grad():
             self.set_transform("predict")
             output = self.model(self.transform(image))
-            pred = output.data.max(1, keepdim = True)[1]
-            return pred
+            pred_dict = {}
+            for i, attr in enumerate(self.selected_attrs):
+                pred = output.data[i]
+                pred = pred if pred > self.attr_threshold[i] else 0
+                if pred != 0:
+                    pred_dict[attr] = pred
+            return pred_dict  # return the predicted positive attributes dict and the probability.

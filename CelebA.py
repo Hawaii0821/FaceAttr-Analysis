@@ -7,7 +7,6 @@ import random
 from PIL import Image
 
 
-# 根据Eval文件里头的数据划分,表示该数据集从上到下划分的终点
 train_end_index = 2048 + 1
 validate_end_index = 3072 + 1
 test_end_index = 3074 + 1

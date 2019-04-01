@@ -9,7 +9,6 @@ def stat_attr(file_path):
     neg_samples = [0 for i in range(40)]
     #attri_id = [i + 1 for i in range(40)]
     #attr_name = []
-    
     with open(file_path) as f:
         attr_info = f.readlines()
         #attr_name = attr_info[1].split()

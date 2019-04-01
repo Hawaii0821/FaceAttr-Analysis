@@ -19,7 +19,8 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 ## Todo
 - [ ] Visualization with tensorboard.
 - [ ] Try more famous models, such as ResNet50, ResNet101, DenseNe, ResNeXt, SENet.
-- [ ] Video stream monitor and real-time analysis. (May try opencv)
 - [ ] Customize the network structure.
-- [ ] Parse the input script command. (May use argparse module)
+- [ ] Parse the input script command. 
 - [ ] Search for the appropriate prediction threshold for each attribute.
+- [ ] Front end: Video stream monitor and transfer video frames.
+- [ ] Back end: face detection and real-time analysis. 
