@@ -4,11 +4,14 @@
 
 # Week5 (19.03.30 ~ 19.03.31)
 ## Difficulty & Solution
-* multi-task learning
-  * sample imbalance: resample; 
+* multi-task learning & multi-label cls
   * gradient domination: add weight for each task loss or cost matrix.
-* multi-label:
-  * sigmoid + F. binary_cross_entropy_with_logits
+  * loss function: sigmoid + F. binary_cross_entropy_with_logits
+* samples issue:
+  * samples imbalance: undersampling; oversampling; threshold-moving/rescaling.
+  * Feature is not obvious and hard to detect, such as the attribute 'attractive'. Semantic segmentation ?
+
+
 
 # Week4 (19.03.23 ~ 19.03.24)
 ## Paper Note
