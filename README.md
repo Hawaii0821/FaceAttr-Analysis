@@ -12,16 +12,19 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 |solver.py|The file has many functions like initializing, training and evaluating model.|
 |main.py| The entry file of project that owns some important variables.|
 | logger.py | Use tensorboardX for visualization. |
-| sample_num.csv | It records the number of positive and negative samples  on every attributes.|
+| sample_num.csv | It records the number of positive and negative samples on every attribute.|
 
 ## Dependency
 > pip install -r requirements.txt 
 
 ## Todo
 - [ ] Visualization with tensorboard.
-- [ ] Try more famous models, such as ResNet50, ResNet101, DenseNe, ResNeXt, SENet.
+- [ ] Try more famous models, such as ResNet50, ResNet101, DenseNet, ResNeXt, SENet.
 - [ ] Customize the network structure.
 - [ ] Parse the input script command. 
-- [ ] Search for the appropriate prediction threshold for every attribute.
+- [ ] Search for the appropriate prediction threshold for every attribute or find a good place to teach themselves.
 - [ ] Front end: Video stream monitor[(picamera)](https://github.com/waveform80/picamera) and transfer video frames.
 - [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis. 
+
+## License
+[MIT](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/LICENSE).

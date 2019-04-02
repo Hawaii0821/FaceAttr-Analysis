@@ -31,7 +31,7 @@ class Solver(object):
         self.attr_path = attr_path
         self.pretrained = pretrained
         self.model_type = model_type
-        self.criterion = nn.CrossEntropyLoss().to(self.device)
+        #self.criterion = nn.CrossEntropyLoss().to(self.device)
         self.build_model(model_type, pretrained)
         self.create_optim(optim_type)
         self.train_loader = None
@@ -239,9 +239,7 @@ class Solver(object):
         This function is to combine the train and evaluate, finally getting a best model.
         """
         train_losses = []
-        #eval_accs = []
-        #eval_losses = []
-        
+      
         best_model_wts = copy.deepcopy(self.model.state_dict())
         best_acc = 0.0
         
@@ -281,11 +279,18 @@ class Solver(object):
         self.model.load_state_dict(best_model_wts)
         torch.save(best_model_wts, model_save_path)
         
+    def load_model(self):
+        try:
+            self.model.load_state_dict(torch.load("./" + self.model_type + "-best_model.pt"))
+            self.LOADED = True
+            return True
+        except:
+            return False
 
     def predict(self, image):
         if not self.LOADED:
             # load the best model dict.
-            self.model.load_state_dict(torch.load("./" + self.model_type + "-best_model.py"))
+            self.model.load_state_dict(torch.load("./" + self.model_type + "-best_model.pt"))
             self.LOADED = True
 
         self.model.eval()
