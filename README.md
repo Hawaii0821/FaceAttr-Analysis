@@ -5,7 +5,7 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 
 | File/Folder | Description |
 | ----------- | ----------- |
-| \paper | This folder keeps the papers relevant to face attibutes analysis.|
+| \paper | This folder keeps papers relevant to face attibutes analysis.|
 | CelebA.py | This file defines the dataset class for CelebA and provides the data loader function. |
 | FaceAttr_baseline_model.py | This file offers the baseline model class, consisting of feature extraction submodel (resnet etc.) and feature classfier submodel (full connect)|
 |analysis_attr.py | It reflects the relationship between positive samples and negetive samples in CelebA.|
@@ -25,6 +25,13 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 - [ ] Search for the appropriate prediction threshold for every attribute or find a good place to teach themselves.
 - [ ] Front end: Video stream monitor[(picamera)](https://github.com/waveform80/picamera) and transfer video frames.
 - [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis. 
+
+## Done
+- [x] Attribute analysis.
+- [x] Data loader.
+- [x] Built baseline model(Resnet18).
+- [x] Train and evaluate of multiple tasks. 
+- [x] Save and load model.
 
 ## License
 [MIT](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/LICENSE).

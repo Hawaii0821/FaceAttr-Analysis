@@ -16,7 +16,7 @@ class FeatureExtraction(nn.Module):
         elif model_type == "Resnet101":
             self.model = models.resnet101(pretrained=pretrained)
         elif model_type == "Resnet151":
-            self.model = models.resnet50(pretrained=pretrained)
+            self.model = models.resnet151(pretrained=pretrained)
         self.model = nn.Sequential(*list(self.model.children())[:-1])
 
     def forward(self, image_batch):
