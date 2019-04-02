@@ -33,5 +33,10 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 - [x] Train and evaluate of multiple tasks. 
 - [x] Save and load model.
 
+# Related Resource
+* [multi-task-learning](https://paperswithcode.com/task/multi-task-learning)
+* [image classification](https://paperswithcode.com/task/image-classification)
+
+
 ## License
 [MIT](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/LICENSE).
