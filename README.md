@@ -18,7 +18,7 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 > pip install -r requirements.txt 
 
 ## Todo
-- [ ] Visualization with tensorboard.
+- [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron). 
 - [ ] Try more famous models, such as ResNet50, ResNet101, DenseNet, ResNeXt, SENet.
 - [ ] Customize the network structure.
 - [ ] Parse the input script command. 
