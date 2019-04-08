@@ -5,20 +5,27 @@ import torchvision
 from torchvision import datasets, transforms, models
 import torch.nn as nn
 import torch.optim as optim
+
 import numpy as np
+import pandas as pd 
 import matplotlib.pyplot as plt 
+import pandas as pd 
+
 import copy
+import time
+
 from CelebA import get_loader
 import torch.nn.functional as F
-from tensorboardX import SummaryWriter
+# from tensorboardX import SummaryWriter
 from FaceAttr_baseline_model import FaceAttrModel
+
 
 
 class Solver(object):
     
     def __init__(self, epoches = 100, batch_size = 64, learning_rate = 0.1,
       model_type = "Resnet18", optim_type = "SGD", momentum = 0.9, pretrained = True,
-      selected_attrs=[], image_dir ="./Img", attr_path = "./Anno/list_attr_celeba.txt", log_dir = "./log", 
+      selected_attrs=[], image_dir ="./Img", attr_path = "./Anno/list_attr_celeba.txt",log_dir = "./log", 
       use_tensorboard = True, attr_loss_weight = [], attr_threshold = []):
 
         self.epoches = epoches 
@@ -38,8 +45,9 @@ class Solver(object):
         self.validate_loader = None
         self.log_dir = log_dir
         self.use_tensorboard = use_tensorboard
-        self.attr_loss_weight = torch.tensor(attr_loss_weight)
+        self.attr_loss_weight = torch.tensor(attr_loss_weight).to(self.device)
         self.attr_threshold = attr_threshold
+        self.model_save_path = model_type + '-best_model.pth'
         self.LOADED = False
         #self.test_loader = None
 
@@ -119,21 +127,21 @@ class Solver(object):
         * input is a output of model [a1, a2 .... ak]
         * target is also a label [b1, b2 ... bk]
         * loss = \sum_i{(ai - bi)**2}
-        """
-        """
+
         loss = torch.tensor([0.0])
         for i in range(self.batch_size):
             for j in range(len(self.selected_attrs)):
                 loss +=  (input[i][j] - target[j].to(self.device)[i])**2
         """
         #cost_matrix = [1 for i in range(len(self.selected_attrs))]
-        total_loss = torch.tensor([0.0])
+        total_loss = torch.tensor([0.0]).to(self.device)
         for i in range(self.batch_size):
             attr_list = []
             for j, attr in enumerate(self.selected_attrs):
                 attr_list.append(target[j][i])
             attr_tensor = torch.tensor(attr_list)
-            total_loss += F.binary_cross_entropy_with_logits(input[i],  attr_tensor.type(torch.FloatTensor).to(self.device), weight=self.attr_loss_weight) 
+            loss = F.binary_cross_entropy_with_logits(input[i].to(self.device),  attr_tensor.type(torch.FloatTensor).to(self.device), weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device)) 
+            total_loss += loss
         return total_loss
 
 
@@ -152,9 +160,9 @@ class Solver(object):
 
         temp_loss = 0.0
         
-        loss_log = {}
+        # loss_log = {}
         # start to train in 1 epoch
-        #print(self.train_loader)
+        # print(self.train_loader)
         for batch_idx, samples in enumerate(self.train_loader):
             print("training batch_idx : {}".format(batch_idx))
             images, labels = samples["image"], samples["label"]
@@ -166,7 +174,7 @@ class Solver(object):
             # get the loss value by the label and output of every attribute
             # sum all the loss values and get a total loss
             # call backward function of the total loss
-            loss_dict = {}
+            # loss_dict = {}
             total_loss = None 
             """
             for i, attr in enumerate(self.selected_attrs):
@@ -209,6 +217,9 @@ class Solver(object):
         correct_dict = {}
         for attr in self.selected_attrs:
             correct_dict[attr] = 0
+
+        confusion_matrix_dict = {}
+
         with torch.no_grad():
             for batch_idx, samples in enumerate(self.validate_loader):
                 images, labels = samples["image"], samples["label"]
@@ -220,8 +231,12 @@ class Solver(object):
                     for j, attr in enumerate(self.selected_attrs):
                         pred = outputs[i].data[j]
                         pred = 1 if pred > self.attr_threshold[j] else 0
+
+                        # record accuracy
                         if pred == labels[j][i]:
                             correct_dict[attr] = correct_dict[attr] + 1
+                        
+                    
                 """  
                 for i, attr in enumerate(self.selected_attrs):
                     predicted = outputs[i].data.mmax(1, keepdim = True)[1]
@@ -244,6 +259,7 @@ class Solver(object):
         best_acc = 0.0
         
         eval_acc_dict = {}
+
         for attr in self.selected_attrs:
             eval_acc_dict[attr] = []
 
@@ -271,17 +287,24 @@ class Solver(object):
         #plt.show() 
 
         # show the curve of evaluating accuracy of every attribute in every epoch
-        for attr in self.selected_attrs:
-           self.show_curve(eval_acc_dict[attr], attr + "-accuracy")
+        #for attr in self.selected_attrs:
+           #self.show_curve(eval_acc_dict[attr], attr + "-accuracy")
+
+        # save the data in files
+        eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)]).T
+        eval_acc_csv = eval_acc_csv.to_csv("./model/" + self.model_type + "-accuracy.csv");
+
+        train_losses_csv = pd.DataFrame(train_losses)
+        train_losses_csv = train_losses_csv.to_csv("./model/" + self.model_type + "-losses.csv")
 
         # load best model weights
-        model_save_path = "./" + self.model_type + "-best_model.pt"
+        self.model_save_path = "./model/" + self.model_type + "-best_model-" + str(int(time.time())) + ".pth"
         self.model.load_state_dict(best_model_wts)
-        torch.save(best_model_wts, model_save_path)
+        torch.save(best_model_wts, self.model_save_path)
         
-    def load_model(self):
+    def load_model(self, model_save_path):
         try:
-            self.model.load_state_dict(torch.load("./" + self.model_type + "-best_model.pt"))
+            self.model.load_state_dict(torch.load(model_save_path))
             self.LOADED = True
             return True
         except:
@@ -290,7 +313,7 @@ class Solver(object):
     def predict(self, image):
         if not self.LOADED:
             # load the best model dict.
-            self.model.load_state_dict(torch.load("./" + self.model_type + "-best_model.pt"))
+            self.model.load_state_dict(torch.load("./" + self.model_save_path))
             self.LOADED = True
 
         self.model.eval()

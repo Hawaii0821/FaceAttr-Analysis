@@ -6,10 +6,10 @@ import os
 import random
 from PIL import Image
 
-
+# train 162770    validate 202599
 train_end_index = 162770 + 1
-validate_end_index = 182638 + 1
-test_end_index = 202599 + 1 # make no sense temporialy.
+validate_end_index = 202599 + 1
+test_end_index = 384 + 1 # make no sense temporialy.
 
 class CelebA(data.Dataset):
     
@@ -68,10 +68,11 @@ class CelebA(data.Dataset):
             split = line.split()
             filename = split[0]
             values = split[1:]
-
+           
             label = []
             # save the attributes into a dict
             for attr_name in self.selected_attrs:
+            
                 idx = self.attr2idx[attr_name]
                 val = int(values[idx])
                 if val == -1:
@@ -154,5 +155,6 @@ def get_loader(image_dir, attr_path, selected_attrs,
     data_loader = data.DataLoader(dataset=dataset,
                                   batch_size=batch_size,
                                   shuffle=(mode=='train'),
-                                  num_workers=num_workers)
+                                  num_workers=num_workers,
+                                  drop_last = True)
     return data_loader

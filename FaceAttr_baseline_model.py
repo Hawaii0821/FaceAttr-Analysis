@@ -7,16 +7,17 @@ from torchvision import transforms, models
 Adopt the pretrained resnet model to extract feature of the feature
 """
 class FeatureExtraction(nn.Module):
-    def __init__(self, model_type, pretrained):
+    def __init__(self, pretrained, model_type = "Resnet18"):
         super(FeatureExtraction, self).__init__()
-        if model_type == "Resnet18":
-            self.model = models.resnet18(pretrained=pretrained)
-        elif model_type == "Resnet34":
+        self.model = models.resnet18(pretrained=pretrained)   
+        if model_type == "Resnet34":
             self.model = models.resnet34(pretrained=pretrained)
+        elif model_type == "Resnet50":
+            self.model = models.resnet50(pretrained=pretrained)
         elif model_type == "Resnet101":
             self.model = models.resnet101(pretrained=pretrained)
-        elif model_type == "Resnet151":
-            self.model = models.resnet151(pretrained=pretrained)
+        elif model_type == "Resnet152":
+            self.model = models.resnet152(pretrained=pretrained)
         self.model = nn.Sequential(*list(self.model.children())[:-1])
 
     def forward(self, image_batch):

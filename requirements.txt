@@ -4,4 +4,3 @@ torchvision==0.2.2.post3
 matplotlib==3.0.3
 torch==1.0.1
 Pillow==5.4.1
-tensorflow==1.13.1

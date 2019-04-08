@@ -1,14 +1,21 @@
 from solver import Solver
 
+# ------------- Path setting --------------------- #
+
+log_dir = "./log"
+# You should download the celeba dataset in the root dir.
+image_dir = "../../dataset/CelebA/Img/img_align_celeba/" 
+attr_path = "../../dataset/CelebA/Anno/list_attr_celeba.txt"
+
 
 # ----------- model/train/test configuration ---- #
-epoches = 3
+epoches = 50
 
-batch_size = 64
+batch_size = 128
 
 learning_rate = 0.0001
 
-model_type = "Resnet50"
+model_type = "Resnet101"  # 34 50 101 152
 
 optim_type = "SGD"
 
@@ -31,20 +38,14 @@ all_attrs = ['5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Ey
             'Wearing_Hat','Wearing_Lipstick', 'Wearing_Necklace', 'Wearing_Necktie', 'Young' 
 ]
 
-attr_nums = [1, 2, 3,4,5,] 
-attr_loss_weight = [1, 0.8, 0.7]  
-attr_threshold = [0.6, 0.5, 0.7] 
+# To be optimized
+attr_nums = [i for i in range(len(all_attrs))] 
+attr_loss_weight = [1 for i in range(len(all_attrs))]  
+attr_threshold = [0.5 for i in range(len(all_attrs))]  
 selected_attrs = []
 for num in attr_nums:
-    selected_attrs.append(num)
+    selected_attrs.append(all_attrs[num])
 
-
-# ------------- Path setting --------------------- #
-
-log_dir = "./log"
-# You should download the celeba dataset in the root dir.
-image_dir = "../CelebA/Img/img_align_celeba/" 
-attr_path = "../CelebA/Anno/list_attr_celeba.txt"
 
 # -------------- Tensorboard --------------------- #
 use_tensorboard = False
