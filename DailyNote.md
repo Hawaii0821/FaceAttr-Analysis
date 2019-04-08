@@ -1,10 +1,9 @@
 # Notes
 
 ## Week7 (19.04.08)
-
-- [*] Open camera and capture video frame by opencv3.
-- [*] Upload the picture on front end and receive it at backend. (Flask)
-- [*] Use haarcascades detector on opencv to detect face. （Fast but not accurate.)
+- [x] Open camera and capture video frame by opencv3.
+- [x] Upload the picture on front end and receive it at backend. (Flask)
+- [x] Use haarcascades detector on opencv to detect face. （Fast but not accurate.)
 
 ## Week6 (19.04.01)
 
