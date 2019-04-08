@@ -22,11 +22,9 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 | DailyNote.md | The recording note of this project.|
 | requirements.txt | The requirements file which save the needed package info. |  
 
-## Dependency
+## Work
 
-> pip install -r requirements.txt
-
-## Todo
+### Todo
 
 - [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
 - [ ] Try more famous models, such as ResNet50, ResNet101, DenseNet, ResNeXt, SENet.
@@ -36,7 +34,7 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 - [ ] Front end: Video stream monitor[(picamera)](https://github.com/waveform80/picamera) and transfer video frames.
 - [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis.
 
-## Done
+### Done
 
 - [x] [Attribute analysis](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/analysis_attr.py).
 - [x] [Data process and load](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/CelebA.py).
@@ -49,6 +47,11 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 - [multi-task-learning](https://paperswithcode.com/task/multi-task-learning)
 - [image classification](https://paperswithcode.com/task/image-classification)
 - [LFW Face DataBase](http://vis-www.cs.umass.edu/lfw/)
+
+## Dependency
+
+> pip install -r requirements.txt
+
 
 ## License
 
