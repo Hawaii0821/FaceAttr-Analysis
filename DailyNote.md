@@ -1,14 +1,14 @@
 # Notes
 
-## Week7 （19.04.08）
+## Week7 (19.04.08)
 
 - [*] Open camera and capture video frame by opencv3.
-- [*] Upload the picture on front end and receive it at backend.
+- [*] Upload the picture on front end and receive it at backend. (Flask)
 - [*] Use haarcascades detector on opencv to detect face. （Fast but not accurate.)
 
 ## Week6 (19.04.01)
 
-Some goals:
+### Some goals:
 
 - find a adaptive and good method to adjuest attribute classification threshold and attribute loss weight.
 - try to find a way to train on different datasets, such as CelebA, LFW. (The mask vector lable from StarGAN)
@@ -16,13 +16,13 @@ Some goals:
 - use face_regonition to extract faces.
 - adopt more meaningful metrics (precision or recall..) instead of accuracy.
 
-New difficulity:
+### New difficulity:
 
 - the trainning samples content is quite different from the detected face images.
 
 ## Week5 (19.03.30 ~ 19.03.31)
 
-## Difficulty & Solution
+### Difficulty & Solution
 
 - multi-task learning & multi-label cls
   - gradient domination: add weight for each task loss or cost matrix.
