@@ -25,7 +25,7 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 | DailyNote.md | The recording note of this project.|
 | requirements.txt | The requirements file which save the needed package info. |  
 
-## Work
+## TODO
 
 - [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
 - [ ] Try more famous models, such as ResNet50, ResNet101, DenseNet, ResNeXt, SENet.
@@ -39,6 +39,11 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 - [x] [Built baseline model(Resnet18)](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/FaceAttr_baseline_model.py).
 - [x] [Train and evaluate of multiple tasks](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/solver.py).
 - [x] Save and load model.
+
+## Problems
+- Sample attributes imbalance.
+- Need more effective learning strategys on multi-label task. (loss function? network structure?...)
+
 
 ## Related Resource
 
