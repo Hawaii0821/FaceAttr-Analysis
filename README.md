@@ -36,8 +36,8 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 - [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis.
 - [x] [Attribute analysis](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/analysis_attr.py).
 - [x] [Data process and load](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/CelebA.py).
-- [x] [Built baseline model(Resnet18)](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/FaceAttr_baseline_model.py).
-- [x] [Train and evaluate of multiple tasks](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/solver.py).
+- [x] [Built baseline model(Resnet18 and 101)](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/FaceAttr_baseline_model.py).
+- [x] [Train and evaluate of multi-task](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/solver.py).
 - [x] Save and load model.
 
 ## Problems
