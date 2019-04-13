@@ -1,13 +1,14 @@
-# Notes
+# Daily Notes
 
 ## Week7 (19.04.08)
+
 - [x] Open camera and capture video frame by opencv3.
 - [x] Upload the picture on front end and receive it at backend. (Flask)
 - [x] Use haarcascades detector on opencv to detect face. （Fast but not accurate.)
 
 ## Week6 (19.04.01)
 
-### Some goals:
+### Some goals
 
 - find a adaptive and good method to adjuest attribute classification threshold and attribute loss weight.
 - try to find a way to train on different datasets, such as CelebA, LFW. (The mask vector lable from StarGAN)
@@ -15,7 +16,7 @@
 - use face_regonition to extract faces.
 - adopt more meaningful metrics (precision or recall..) instead of accuracy.
 
-### New difficulity:
+### New difficulity
 
 - the trainning samples content is quite different from the detected face images.
 
@@ -56,3 +57,8 @@
 
 1. Improving Facial Attribute Prediction using Semantic Segmentation. [Arxiv](https://arxiv.org/abs/1704.08740)
 2. Harnessing Synthesized Abstraction Images to Improve Facial Attribute Recognition. [IJCAI](https://www.ijcai.org/proceedings/2018/102)
+
+## Week3 (19.03.16)
+
+- A simple analysis note in `CelebA_analysis.md`
+- A simple visualzation of every attributes' sample numbers in `analysis_attr.py`.

@@ -1,6 +1,11 @@
-numpy==1.15.4
 pandas==0.24.1
-torchvision==0.2.2.post3
+numpy==1.15.4
 matplotlib==3.0.3
 torch==1.0.1
-Pillow==5.4.1
+Click==7.0
+torchvision==0.2.2.post3
+Pillow==6.0.0
+Flask==1.0.2
+imutils==0.5.2
+tensorflow==1.13.1
+Werkzeug==0.15.2
