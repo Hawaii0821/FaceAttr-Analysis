@@ -9,7 +9,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 |**Folders**||
 | \paper | This folder keeps papers relevant to face attibutes analysis.|
 | \model | The trained model and the evaluatiing result including model dict, loss and accuracy csv files. |
-|\front-back-end| the front end html to upload image and the backend flask to receive image.|
+|\front-back-end| the front end(html) to upload images and the back end(flask) to receive images.|
 |**Main files**||
 | CelebA.py | This file defines the dataset class for CelebA and provides the data loader function. |
 | FaceAttr_baseline_model.py | This file offers the baseline model class, consisting of feature extraction submodel (resnet etc.) and feature classfier submodel (full connect)|
@@ -42,7 +42,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 ## Problems
 - Sample attributes imbalance.
-- Need more effective learning strategys on multi-label task. (loss function? network structure?...)
+- Need more effective learning strategies on multi-label task. (loss function? network structure?...)
 
 
 ## Related Resource
