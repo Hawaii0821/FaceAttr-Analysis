@@ -32,7 +32,9 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 - [ ] Customize the network structure.
 - [ ] Parse the input script command.
 - [ ] Search for the appropriate prediction threshold for every attribute or find a good place to teach themselves.
-- [x] Front end: Video stream monitor[(picamera)](https://github.com/waveform80/picamera)(flask) and transfer video frames.
+- [ ] Plan1: video stream monitor[(picamera on Raspberry Pi)](https://github.com/waveform80/picamera) and transfer video frames.
+- [ ] Plan2: upload image in html and return the analysis result.
+- [ ] Plan3: open camera of laptop and real-time analyis.
 - [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis.
 - [x] [Attribute analysis](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/analysis_attr.py).
 - [x] [Data process and load](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/CelebA.py).
