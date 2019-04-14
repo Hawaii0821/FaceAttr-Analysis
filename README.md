@@ -42,6 +42,8 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 - [x] [Train and evaluate of multi-task](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/solver.py).
 - [x] Save and load model.
 
+More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/DailyNote.md)
+
 ## Problems
 - Sample attributes imbalance.
 - Need more effective learning strategies on multi-label task. (loss function? network structure?...)
