@@ -1,6 +1,6 @@
 # FaceAttr-Analysis
 
-This repo is for my adavanced training on deeping learning with the purpose of building a face attributes analysis application.
+This repo is for the adavanced training on deeping learning with the purpose of building a face attributes analysis application.
 
 ## File Description
 
@@ -9,7 +9,7 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 |**Folders**||
 | \paper | This folder keeps papers relevant to face attibutes analysis.|
 | \model | The trained model and the evaluatiing result including model dict, loss and accuracy csv files. |
-|\front-back-end| the front end html to upload image and the backend flask to receive image.|
+|\front-back-end| the front end(html) to upload images and the back end(flask) to receive images.|
 |**Main files**||
 | CelebA.py | This file defines the dataset class for CelebA and provides the data loader function. |
 | FaceAttr_baseline_model.py | This file offers the baseline model class, consisting of feature extraction submodel (resnet etc.) and feature classfier submodel (full connect)|
@@ -25,20 +25,27 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 | DailyNote.md | The recording note of this project.|
 | requirements.txt | The requirements file which save the needed package info. |  
 
-## Work
+## TODO
 
 - [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
 - [ ] Try more famous models, such as ResNet50, ResNet101, DenseNet, ResNeXt, SENet.
 - [ ] Customize the network structure.
 - [ ] Parse the input script command.
 - [ ] Search for the appropriate prediction threshold for every attribute or find a good place to teach themselves.
-- [x] Front end: Video stream monitor[(picamera)](https://github.com/waveform80/picamera)(flask) and transfer video frames.
+- [ ] Plan1: video stream monitor[(picamera on Raspberry Pi)](https://github.com/waveform80/picamera) and transfer video frames.
+- [ ] Plan2: upload image in html and return the analysis result.
+- [ ] Plan3: open camera of laptop and real-time analyis.
 - [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis.
 - [x] [Attribute analysis](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/analysis_attr.py).
 - [x] [Data process and load](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/CelebA.py).
-- [x] [Built baseline model(Resnet18)](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/FaceAttr_baseline_model.py).
-- [x] [Train and evaluate of multiple tasks](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/solver.py).
+- [x] [Built baseline model(Resnet18 and 101)](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/FaceAttr_baseline_model.py).
+- [x] [Train and evaluate of multi-task](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/solver.py).
 - [x] Save and load model.
+
+## Problems
+- Sample attributes imbalance.
+- Need more effective learning strategies on multi-label task. (loss function? network structure?...)
+
 
 ## Related Resource
 
@@ -48,7 +55,8 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 
 ## Dependency & OS
 
-> pip install -r requirements.txt   // pipreqs ./
+> pip install -r requirements.txt   # created by cmd: pipreqs ./
+
 > linux 16.0.1
 
 ## License
