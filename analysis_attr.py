@@ -49,7 +49,6 @@ all_attrs = ['5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Ey
 
 
 pos, neg = stat_attr("../CelebA/Anno/list_attr_celeba.txt")
-
 attr_dict = {}
 with open('sample_num.csv', 'w') as f:
     f.write("attribute,positive sample,negative sample\n")
