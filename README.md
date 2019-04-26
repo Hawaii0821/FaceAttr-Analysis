@@ -48,7 +48,7 @@ This repo is for my adavanced training on deeping learning with the purpose of b
 
 ## Dependency & OS
 
-> pip install -r requirements.txt   // pipreqs ./
+> pip install -r requirements.txt   // requirements.txt created by cmd: pipreqs ./
 > linux 16.0.1
 
 ## License
