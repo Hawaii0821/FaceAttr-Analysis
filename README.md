@@ -2,6 +2,11 @@
 
 This repo is for the adavanced training on deeping learning with the purpose of building a face attributes analysis application.
 
+## Planning Model
+
+- [x] resnet101 + self-defined fc + sigmoid + BCE loss with logits
+- [] ....  
+
 ## File Description
 
 | File/Folder | Description |
@@ -19,6 +24,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 | logger.py | Use tensorboardX for visualization. |
 |camera.py| Open camera and detect face.|
 |haarcascade_frontalface_default.xml| The model dict of detecting face with opencv.|
+|exp_resylt_analysis.py|Show the csv result and other visual application|
 |**Recoding files**||
 | sample_num.csv | It records the number of positive and negative samples on every attribute.|
 |sample_num.png| It shows the distribution of attributes.|
@@ -45,9 +51,10 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/DailyNote.md)
 
 ## Problems
+
 - Sample attributes imbalance.
 - Need more effective learning strategies on multi-label task. (loss function? network structure?...)
-
+- The wild images differ from training and test image (aligned)
 
 ## Related Resource
 

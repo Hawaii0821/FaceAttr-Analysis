@@ -11,6 +11,13 @@ train_end_index = 162770 + 1
 validate_end_index = 202599 + 1
 test_end_index = 384 + 1 # make no sense temporialy.
 
+
+# for test
+"""
+train_end_index = 128 + 1
+validate_end_index = 256 + 1
+test_end_index = 128 + 1
+"""
 class CelebA(data.Dataset):
     
     # each image is  218*178;
