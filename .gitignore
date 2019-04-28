@@ -105,3 +105,6 @@ venv.bak/
 .mypy_cache/
 
 .vscode
+
+# ignore model
+.model/*.pth

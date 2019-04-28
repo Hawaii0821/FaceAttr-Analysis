@@ -20,7 +20,7 @@ More detailed data can be seen in folder `model`.
 
 ### State of the Art
 
-![state of the art](https://raw.githubusercontent.com/JoshuaQYH/blogImage/master/celeba.png)
+![FaceAttribute-FAN from Youtu search.](https://raw.githubusercontent.com/JoshuaQYH/blogImage/master/celeba.png)
 
 ## File Description
 
