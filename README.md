@@ -7,10 +7,13 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 - [x] resnet101 + self-defined fc + sigmoid + BCE loss with logits
 - [] ....  
 
+<<<<<<< HEAD
 ## Experiment Result
 
 
 
+=======
+>>>>>>> 6df6046d450b96e534e163b1c60236242862fb90
 ## File Description
 
 | File/Folder | Description |

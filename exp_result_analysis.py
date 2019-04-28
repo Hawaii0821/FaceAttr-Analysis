@@ -42,12 +42,12 @@ def show_loss(loss_df):
 
 if __name__ == "__main__":
    
-    acc_csv = './model/Resnet101-accuracy1556408636.csv'
-    acc_df = pd.read_csv(acc_csv)
-    print(acc_df.T[1:-1])
-    show_accuracy(acc_df.T[1:-1])
 
-    loss_csv = './model/Resnet101-losses1556408636.csv'
+    acc_csv = './model/Resnet101-accuracy.csv'
+    acc_df = pd.read_csv(acc_csv)
+    show_accuracy(acc_df)
+    print(acc_df.describe().T)
+
+    loss_csv = './model/Resnet101-losses.csv'
     loss_df = pd.read_csv(loss_csv)
     show_loss(loss_df)
-    print(acc_df.T[1:-1].describe())
