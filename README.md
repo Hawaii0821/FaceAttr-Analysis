@@ -2,7 +2,7 @@
 
 This repo is for the adavanced training on deeping learning with the purpose of building a face attributes analysis application.
 
-## Planning Model
+## Plan
 
 - [x] resnet101 + self-defined fc + BCE loss with logits + average accuracy
 - [x] resnet101 + self-defined fc + BCE loss with logits + threshold rescaling(`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics(recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`)
@@ -21,17 +21,17 @@ More detailed data can be seen in folder `model`.
 ### State of the Art
 
 ![](https://raw.githubusercontent.com/JoshuaQYH/blogImage/master/celeba.png)
-> From [FAN,Youtu Search](https://www.ijcai.org/proceedings/2018/102)
+> The image is from this paper--[FAN,Youtu Search,](https://www.ijcai.org/proceedings/2018/102)
 
 ## File Description
 
 | File/Folder | Description |
 | ----------- | ----------- |
-|**Folders**||
+|**Folders**|--------------------------------------------------------|
 | \paper | This folder keeps papers relevant to face attibutes analysis.|
 | \model | The trained model and the evaluatiing result including model dict, loss and accuracy csv files. |
 |\front-back-end| the front end(html) to upload images and the back end(flask) to receive images.|
-|**Main files**||
+|**Main files**|-----------------------------------------------------|
 | CelebA.py | This file defines the dataset class for CelebA and provides the data loader function. |
 | FaceAttr_baseline_model.py | This file offers the baseline model class, consisting of feature extraction submodel (resnet etc.) and feature classfier submodel (full connect)|
 |analysis_attr.py | It reflects the relationship between positive samples and negetive samples in CelebA.|
@@ -41,7 +41,7 @@ More detailed data can be seen in folder `model`.
 |camera.py| Open camera and detect face.|
 |haarcascade_frontalface_default.xml| The model dict of detecting face with opencv.|
 |exp_resylt_analysis.py|Show the csv result and other visual application|
-|**Recoding files**||
+|**Recoding files**|---------------------------------------------------------|
 | sample_num.csv | It records the number of positive and negative samples on every attribute.|
 |sample_num.png| It shows the distribution of attributes.|
 | DailyNote.md | The recording note of this project.|
@@ -80,12 +80,7 @@ More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Ana
 
 ## Dependency & OS
 
-<<<<<<< HEAD
 > pip install -r requirements.txt   // requirements.txt created by cmd: pipreqs ./
-=======
-> pip install -r requirements.txt   # created by cmd: pipreqs ./
-
->>>>>>> d660a031171a2501490b672b3862c14b9547c978
 > linux 16.0.1
 
 ## License
