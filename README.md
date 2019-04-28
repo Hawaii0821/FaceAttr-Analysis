@@ -6,14 +6,14 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 ### Dataset
 
-- CelebA: 162770 train images and 202599 test images.
+- CelebA: about 162770 train images and  about 39829 test images.
 - LFWA: todo....
 
 ### Methods
 
 - [x] v1:resnet101 + self-defined fc + BCE loss with logits + average accuracy
 - [x] v2:resnet101 + self-defined fc + BCE loss with logits + threshold rescaling (`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics (recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`)
-- [] v3:SENet + tanh + hinge + loss....
+- [ ] v3:SENet + tanh + hinge + loss....
 
 ## Experiment Result
 
@@ -37,12 +37,12 @@ Priority:
 
 - [ ] Try more famous models, such as ResNet50, ResNet101, DenseNet, ResNeXt, SENet.
 - [ ] Customize the network structure for better performance.
-- [ ] open camera of laptop and real-time analyis. 
+- [ ] Open camera of laptop and real-time analyis. 
 - [ ] Search for the appropriate prediction threshold for every attribute or find a good place to teach themselves.
 - [ ] More detailed analysis about the experiment results.
 - [ ] Train on wild images instead of precroped images to get a higher performance in practice.
 - [ ] Face localization and alignment.
-- [ ] Train a model on different datasets.
+- [ ] Train a model on different datasets by processing labels.
 
 Choice:
 
@@ -73,11 +73,11 @@ More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Ana
 
 | File/Folder | Description |
 | ----------- | ----------- |
-|**Folders**|------------------------------------------------------------------------------------------------|
+|**Folders**|--------------------------------------------------------------------------------------|
 | \paper | This folder keeps papers relevant to face attibutes analysis.|
 | \model | The trained model and the evaluatiing result including model dict, loss and accuracy csv files. |
 |\front-back-end| the front end(html) to upload images and the back end(flask) to receive images.|
-|**Main files**|----------------------------------------------------------------------------------------------|
+|**Main files**|-----------------------------------------------------------------------------------|
 | CelebA.py | This file defines the dataset class for CelebA and provides the data loader function. |
 | FaceAttr_baseline_model.py | This file offers the baseline model class, consisting of feature extraction submodel (resnet etc.) and feature classfier submodel (full connect)|
 |analysis_attr.py | It reflects the relationship between positive samples and negetive samples in CelebA.|
@@ -87,7 +87,7 @@ More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Ana
 |camera.py| Open camera and detect face.|
 |haarcascade_frontalface_default.xml| The model dict of detecting face with opencv.|
 |exp_resylt_analysis.py|Show the experiment result and other visual application|
-|**Recoding files**|------------------------------------------------------------------------------------------|
+|**Recoding files**|-----------------------------------------------------------------------|
 | sample_num.csv | It records the number of positive and negative samples on every attribute.|
 |sample_num.png| It shows the distribution of attributes.|
 | DailyNote.md | The recording note of this project.|
