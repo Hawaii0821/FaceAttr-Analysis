@@ -1,15 +1,24 @@
 from solver import Solver
-
+import os
+import random
+import numpy as np 
+import torch
+import pandas as pd 
 # ------------- Path setting --------------------- #
 
 log_dir = "./log"
 # You should download the celeba dataset in the root dir.
+
+# the dataset local path.
+# image_dir = "../CelebA/Img/img_align_celeba/" 
+# attr_path = "../CelebA/Anno/list_attr_celeba.txt"
+
+#the dataset path run on server.
 image_dir = "../../dataset/CelebA/Img/img_align_celeba/" 
 attr_path = "../../dataset/CelebA/Anno/list_attr_celeba.txt"
 
-
 # ----------- model/train/test configuration ---- #
-epoches = 50
+epoches = 60  # 50
 
 batch_size = 128
 
@@ -41,14 +50,31 @@ all_attrs = ['5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Ey
 # To be optimized
 attr_nums = [i for i in range(len(all_attrs))] 
 attr_loss_weight = [1 for i in range(len(all_attrs))]  
-attr_threshold = [0.5 for i in range(len(all_attrs))]  
+
 selected_attrs = []
 for num in attr_nums:
     selected_attrs.append(all_attrs[num])
 
+# To solve the sample imbalance called rescaling, If the threshold > m+ /(m+ + m-), treat it as a positive sample. 
+attr_threshold = [0.5 for i in range(len(all_attrs))]  
+sample_csv = pd.read_csv('sample_num.csv')
+attr_threshold = (sample_csv['positive sample']/(sample_csv['positive sample'] + sample_csv['negative sample'])).tolist()
+
 
 # -------------- Tensorboard --------------------- #
 use_tensorboard = False
+
+
+# ------------------------------------------------ # 
+# make sure the same results with same params in different running time.
+def seed_everything(seed=1234):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+seed_everything()
 
 
 #--------------- exe ----------------------------- # 

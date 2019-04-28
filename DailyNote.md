@@ -1,5 +1,29 @@
 # Daily Notes
 
+
+## Week9 (19.04.27)
+
+### Some ideas
+
+- finish the adaptive attribute thereshold and weight loss task.
+- compare result with the state of art or some other baseline.
+- train on raw image instead of aligned image.(optional)
+- try to record other evaluation metric, like recall, precision and balanced accuracy.
+- more adversarial Robustness
+- tanh + hinge
+- focal loss
+
+### Modified
+
+- loss function. If the nn model has the sigmoid function in the end, the loss function cannot be the 
+
+### Paper
+
+- Semantic segmentation to help analysis.
+- Harnessing Synthesized Abstraction Images to Improve Facial Attribute Recognition.(Youtu)
+- Facial Attributes: Accuracy and Adversarial Robustness. （Transfomer)
+- Multi-task: face detection and face analysis.
+
 ## Week7 (19.04.08)
 
 - [x] Open camera and capture video frame by opencv3.
@@ -62,3 +86,5 @@
 
 - A simple analysis note in `CelebA_analysis.md`
 - A simple visualzation of every attributes' sample numbers in `analysis_attr.py`.
+
+

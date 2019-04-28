@@ -33,12 +33,11 @@ class Solver(object):
         self.learning_rate = learning_rate
         self.selected_attrs = selected_attrs
         self.momentum = momentum
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
         self.image_dir = image_dir
         self.attr_path = attr_path
         self.pretrained = pretrained
         self.model_type = model_type
-        #self.criterion = nn.CrossEntropyLoss().to(self.device)
         self.build_model(model_type, pretrained)
         self.create_optim(optim_type)
         self.train_loader = None
@@ -47,26 +46,14 @@ class Solver(object):
         self.use_tensorboard = use_tensorboard
         self.attr_loss_weight = torch.tensor(attr_loss_weight).to(self.device)
         self.attr_threshold = attr_threshold
-        self.model_save_path = model_type + '-best_model.pth'
+        self.model_save_path = 'Resnet101' + '-best_model.pth'  # default
         self.LOADED = False
-        #self.test_loader = None
-
+        
 
     def build_model(self, model_type, pretrained):
         """Here should change the model's structure""" 
-
         self.model = FaceAttrModel(model_type, pretrained, self.selected_attrs).to(self.device)
 
-        """
-        if model_type == "Resnet18":
-            self.model = models.resnet18(pretrained = self.pretrained).to(self.device)
-            num_ftrs = self.model.fc.in_features
-            self.model.fc = nn.Linear(num_ftrs, len(self.selected_attrs) * 2)
-        elif model_type == "Resnet50":
-            self.model = models.resnet50(pretrained= self.pretrained).to(self.device)
-            num_ftrs = self.model.fc.in_features
-            self.model.fc = nn.Linear(num_ftrs, 2 * len(self.selected_attrs))
-        """
 
     def build_tensorboard(self):
         """Build a tensorboard logger."""
@@ -119,28 +106,20 @@ class Solver(object):
         plt.savefig("{}.jpg".format(title))
 
     # self define loss function
-    def multi_loss_fn(self, input, target):
-        """
-        input shape: tensor(batch_size * [attr num...]] 
-        target shape: [tensor([... * batch_size]) * attrnum]
-        description:
-        * input is a output of model [a1, a2 .... ak]
-        * target is also a label [b1, b2 ... bk]
-        * loss = \sum_i{(ai - bi)**2}
-
-        loss = torch.tensor([0.0])
-        for i in range(self.batch_size):
-            for j in range(len(self.selected_attrs)):
-                loss +=  (input[i][j] - target[j].to(self.device)[i])**2
-        """
-        #cost_matrix = [1 for i in range(len(self.selected_attrs))]
+    def multi_loss_fn(self, input_, target):
+        # cost_matrix = [1 for i in range(len(self.selected_attrs))]
         total_loss = torch.tensor([0.0]).to(self.device)
         for i in range(self.batch_size):
             attr_list = []
             for j, attr in enumerate(self.selected_attrs):
                 attr_list.append(target[j][i])
             attr_tensor = torch.tensor(attr_list)
-            loss = F.binary_cross_entropy_with_logits(input[i].to(self.device),  attr_tensor.type(torch.FloatTensor).to(self.device), weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device)) 
+           
+            loss = F.binary_cross_entropy_with_logits(input_[i].to(self.device),  
+                                                    attr_tensor.type(torch.FloatTensor).to(self.device), 
+                                                    weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device)) 
+           
+
             total_loss += loss
         return total_loss
 
@@ -171,18 +150,6 @@ class Solver(object):
             outputs = self.model(images)
             self.optim.zero_grad()
             
-            # get the loss value by the label and output of every attribute
-            # sum all the loss values and get a total loss
-            # call backward function of the total loss
-            # loss_dict = {}
-            total_loss = None 
-            """
-            for i, attr in enumerate(self.selected_attrs):
-                print(len(outputs[i]), len(labels[i]))
-                loss_dict[attr] = self.criterion(outputs[i], labels[i].to(self.device))
-                total_loss += loss_dict[attr]
-                loss_log[attr] += loss_dict[attr]
-            """
             #total_loss = self.criterion(outputs[0], labels)
             total_loss = self.multi_loss_fn(outputs, labels)
             total_loss.backward()
@@ -219,6 +186,10 @@ class Solver(object):
             correct_dict[attr] = 0
 
         confusion_matrix_dict = {}
+        confusion_matrix_dict['TP'] = [0 for i in range(len(self.selected_attrs))]
+        confusion_matrix_dict['TN'] = [0 for i in range(len(self.selected_attrs))]
+        confusion_matrix_dict['FP'] = [0 for i in range(len(self.selected_attrs))]
+        confusion_matrix_dict['FN'] = [0 for i in range(len(self.selected_attrs))]
 
         with torch.no_grad():
             for batch_idx, samples in enumerate(self.validate_loader):
@@ -235,19 +206,21 @@ class Solver(object):
                         # record accuracy
                         if pred == labels[j][i]:
                             correct_dict[attr] = correct_dict[attr] + 1
-                        
-                    
-                """  
-                for i, attr in enumerate(self.selected_attrs):
-                    predicted = outputs[i].data.mmax(1, keepdim = True)[1]
-                    correct_dict[attr] += (predicted == labels[i]).sum().detach().numpy()
-                """
+
+                        if pred == 1 and labels[j][i] == 1:
+                            confusion_matrix_dict['TP'][j] += 1
+                        if pred == 1 and labels[j][i] == 0:
+                            confusion_matrix_dict['TN'][j] += 1
+                        if pred == 0 and labels[j][i] == 1:
+                            confusion_matrix_dict['FP'][j] += 1
+                        if pred == 0 and labels[j][i] == 0:
+                            confusion_matrix_dict['FN'][j] += 1
 
             # get the average accuracy
             for attr in self.selected_attrs:
                 correct_dict[attr] = correct_dict[attr] * 100 / len(self.validate_loader.dataset)
             
-        return correct_dict
+        return correct_dict, confusion_matrix_dict
 
     def fit(self):
         """
@@ -259,6 +232,7 @@ class Solver(object):
         best_acc = 0.0
         
         eval_acc_dict = {}
+        confusion_matrix_df = None 
 
         for attr in self.selected_attrs:
             eval_acc_dict[attr] = []
@@ -266,7 +240,7 @@ class Solver(object):
         for epoch in range(self.epoches):
             running_loss = self.train(epoch)
             print("{}/{} Epoch:  in training process，average loss: {:.4f}".format(epoch + 1, self.epoches, running_loss))
-            average_acc_dict = self.evaluate()
+            average_acc_dict, confusion_matrix_dict = self.evaluate()
             print("{}/{} Epoch: in evaluating process，average accuracy:{}".format(epoch + 1, self.epoches, average_acc_dict))
             train_losses.append(running_loss)
             average_acc = 0.0
@@ -281,34 +255,28 @@ class Solver(object):
             if average_acc > best_acc: 
                 best_acc = average_acc
                 best_model_wts = copy.deepcopy(self.model.state_dict())
-    
-        # show the curve of trainging loss in every epoch
-        #self.show_curve(train_losses, "loss in train")
-        #plt.show() 
+                confusion_matrix_df = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
 
-        # show the curve of evaluating accuracy of every attribute in every epoch
-        #for attr in self.selected_attrs:
-           #self.show_curve(eval_acc_dict[attr], attr + "-accuracy")
 
-        # save the data in files
-        eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)]).T
-        eval_acc_csv = eval_acc_csv.to_csv("./model/" + self.model_type + "-accuracy.csv");
+        # save the accuracy in files
+        timestamp = str(int(time.time()))
+        eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)])
+        eval_acc_csv.to_csv("./model/" + self.model_type + "-accuracy" + timestamp + ".csv");
 
+        # save the loss files
         train_losses_csv = pd.DataFrame(train_losses)
-        train_losses_csv = train_losses_csv.to_csv("./model/" + self.model_type + "-losses.csv")
+        train_losses_csv.to_csv("./model/" + self.model_type + "-losses" + timestamp +".csv")
 
         # load best model weights
-        self.model_save_path = "./model/" + self.model_type + "-best_model-" + str(int(time.time())) + ".pth"
+        self.model_save_path = "./model/" + self.model_type + "-best_model-" + timestamp + ".pth"
         self.model.load_state_dict(best_model_wts)
+        self.LOADED = True
         torch.save(best_model_wts, self.model_save_path)
-        
-    def load_model(self, model_save_path):
-        try:
-            self.model.load_state_dict(torch.load(model_save_path))
-            self.LOADED = True
-            return True
-        except:
-            return False
+
+        # save the confusion matrix of each attributes.
+        confusion_matrix_df.to_csv("./model/" + self.model_type + '-confusion_matrix-' + timestamp + '.csv', index=self.selected_attrs)
+
+
 
     def predict(self, image):
         if not self.LOADED:
