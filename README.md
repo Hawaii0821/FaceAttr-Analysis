@@ -4,16 +4,24 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 ## Planning Model
 
-- [x] resnet101 + self-defined fc + sigmoid + BCE loss with logits
-- [] ....  
+- [x] resnet101 + self-defined fc + BCE loss with logits + average accuracy
+- [x] resnet101 + self-defined fc + BCE loss with logits + threshold rescaling(`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics(recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`)
 
-<<<<<<< HEAD
 ## Experiment Result
 
+### Our Work
 
+| plan | avearage accuracy(%)| macro-precision(%) | macro-recall(%) | macro-F1(%) |
+| ---- | -----| ---- | ----- | ----- |
+| Resnet101-v1  |  91.14 |--- | ---| ---|
+| Resnet101-v2 | 90.07 | 0.67 | 0.68 | 0.67 |
 
-=======
->>>>>>> 6df6046d450b96e534e163b1c60236242862fb90
+More detailed data can be seen in folder `model`.
+
+### State of the Art
+
+![state of the art](https://raw.githubusercontent.com/JoshuaQYH/blogImage/master/celeba.png)
+
 ## File Description
 
 | File/Folder | Description |

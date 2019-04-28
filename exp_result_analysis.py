@@ -4,6 +4,7 @@ import numpy as np
 
 def show_accuracy(acc_df):
     # get accuracy
+    
     acc_list = acc_df.iloc[:, -1].tolist()
 
     # get attributes
@@ -41,13 +42,17 @@ def show_loss(loss_df):
 
 
 if __name__ == "__main__":
-   
-
-    acc_csv = './model/Resnet101-accuracy.csv'
+    
+    acc_csv = './model/v2-Resnet101-accuracy.csv'
     acc_df = pd.read_csv(acc_csv)
     show_accuracy(acc_df)
-    print(acc_df.describe().T)
-
-    loss_csv = './model/Resnet101-losses.csv'
+    print(acc_df.describe())
+   
+    loss_csv = './model/v2-Resnet101-losses.csv'
     loss_df = pd.read_csv(loss_csv)
     show_loss(loss_df)
+
+    matrix = './model/v2-Resnet101-confusion_matrix.csv'
+    matrix_df = pd.read_csv(matrix)
+    print(matrix_df)
+    print(matrix_df.describe())

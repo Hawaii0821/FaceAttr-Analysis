@@ -18,7 +18,7 @@ image_dir = "../../dataset/CelebA/Img/img_align_celeba/"
 attr_path = "../../dataset/CelebA/Anno/list_attr_celeba.txt"
 
 # ----------- model/train/test configuration ---- #
-epoches = 60  # 50
+epoches = 50  # 50
 
 batch_size = 128
 
@@ -57,9 +57,11 @@ for num in attr_nums:
 
 # To solve the sample imbalance called rescaling, If the threshold > m+ /(m+ + m-), treat it as a positive sample. 
 attr_threshold = [0.5 for i in range(len(all_attrs))]  
+
+""" Cause worse accuracy result.
 sample_csv = pd.read_csv('sample_num.csv')
 attr_threshold = (sample_csv['positive sample']/(sample_csv['positive sample'] + sample_csv['negative sample'])).tolist()
-
+"""
 
 # -------------- Tensorboard --------------------- #
 use_tensorboard = False

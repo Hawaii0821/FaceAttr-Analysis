@@ -190,6 +190,11 @@ class Solver(object):
         confusion_matrix_dict['TN'] = [0 for i in range(len(self.selected_attrs))]
         confusion_matrix_dict['FP'] = [0 for i in range(len(self.selected_attrs))]
         confusion_matrix_dict['FN'] = [0 for i in range(len(self.selected_attrs))]
+        confusion_matrix_dict['precision'] = [0 for i in range(len(self.selected_attrs))]
+        confusion_matrix_dict['recall'] = [0 for i in range(len(self.selected_attrs))]
+        confusion_matrix_dict['TPR'] = [0 for i in range(len(self.selected_attrs))]
+        confusion_matrix_dict['FPR'] = [0 for i in range(len(self.selected_attrs))]
+        confusion_matrix_dict['F1'] = [0 for i in range(len(self.selected_attrs))]
 
         with torch.no_grad():
             for batch_idx, samples in enumerate(self.validate_loader):
@@ -216,10 +221,21 @@ class Solver(object):
                         if pred == 0 and labels[j][i] == 0:
                             confusion_matrix_dict['FN'][j] += 1
 
+            i = 0
             # get the average accuracy
             for attr in self.selected_attrs:
                 correct_dict[attr] = correct_dict[attr] * 100 / len(self.validate_loader.dataset)
-            
+                confusion_matrix_dict['precision'][i] = confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['FP'][i] 
+                                                        + confusion_matrix_dict['TP'][i])
+                confusion_matrix_dict['recall'][i]= confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['TN'][i] 
+                                                    + confusion_matrix_dict['TP'][i])
+                confusion_matrix_dict['TPR'][i]= confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['TP'][i] 
+                                                    + confusion_matrix_dict['FN'][i])
+                confusion_matrix_dict['FPR'][i]= confusion_matrix_dict['FP'][i]/(confusion_matrix_dict['FP'][i] 
+                                                    + confusion_matrix_dict['TN'][i])
+                confusion_matrix_dict['F1'][i] = 2*confusion_matrix_dict['precision']*confusion_matrix_dict['recall']/(confusion_matrix_dict['precision'] + confusion_matrix_dict['recall'])                                                                          
+                i += 1
+
         return correct_dict, confusion_matrix_dict
 
     def fit(self):
@@ -260,7 +276,7 @@ class Solver(object):
 
         # save the accuracy in files
         timestamp = str(int(time.time()))
-        eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)])
+        eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)]).T 
         eval_acc_csv.to_csv("./model/" + self.model_type + "-accuracy" + timestamp + ".csv");
 
         # save the loss files

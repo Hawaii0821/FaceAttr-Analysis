@@ -1,7 +1,12 @@
 # Daily Notes
 
+Some notes, summary or ideas on the process of learning with unfixed format in every week.
 
 ## Week9 (19.04.27)
+
+### Experiment summary
+
+Add threshold scaling, causing worse accuracy. Maybe we should define some thresholds for some worse attributes by observing the confusion matrix.
 
 ### Some ideas
 
@@ -12,10 +17,6 @@
 - more adversarial Robustness
 - tanh + hinge
 - focal loss
-
-### Modified
-
-- loss function. If the nn model has the sigmoid function in the end, the loss function cannot be the 
 
 ### Paper
 
