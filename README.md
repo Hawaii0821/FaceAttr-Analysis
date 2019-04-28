@@ -16,7 +16,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 | Resnet101-v1  |  91.14 |--- | ---| ---|
 | Resnet101-v2 | 90.07 | 0.67 | 0.68 | 0.67 |
 
-More detailed data can be seen in folder `model`.
+More detailed data can be seen in folder [](./model).
 
 ### State of the Art
 
@@ -27,11 +27,11 @@ More detailed data can be seen in folder `model`.
 
 | File/Folder | Description |
 | ----------- | ----------- |
-|**Folders**|--------------------------------------------------------|
+|**Folders**|-----------------------------------------------------------------------------------------------------------|
 | \paper | This folder keeps papers relevant to face attibutes analysis.|
 | \model | The trained model and the evaluatiing result including model dict, loss and accuracy csv files. |
 |\front-back-end| the front end(html) to upload images and the back end(flask) to receive images.|
-|**Main files**|-----------------------------------------------------|
+|**Main files**|------------------------------------------------------------------------------------------------------------|
 | CelebA.py | This file defines the dataset class for CelebA and provides the data loader function. |
 | FaceAttr_baseline_model.py | This file offers the baseline model class, consisting of feature extraction submodel (resnet etc.) and feature classfier submodel (full connect)|
 |analysis_attr.py | It reflects the relationship between positive samples and negetive samples in CelebA.|
@@ -41,24 +41,30 @@ More detailed data can be seen in folder `model`.
 |camera.py| Open camera and detect face.|
 |haarcascade_frontalface_default.xml| The model dict of detecting face with opencv.|
 |exp_resylt_analysis.py|Show the csv result and other visual application|
-|**Recoding files**|---------------------------------------------------------|
+|**Recoding files**|---------------------------------------------------------------------------------------------------------|
 | sample_num.csv | It records the number of positive and negative samples on every attribute.|
 |sample_num.png| It shows the distribution of attributes.|
 | DailyNote.md | The recording note of this project.|
 | requirements.txt | The requirements file which save the needed package info. |  
 
-## TODO
+## Simple Dashbord
 
-- [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
+Priority:
 - [ ] Try more famous models, such as ResNet50, ResNet101, DenseNet, ResNeXt, SENet.
-- [ ] Customize the network structure.
-- [ ] Parse the input script command.
+- [ ] Customize the network structure for better performance.
+- [ ] open camera of laptop and real-time analyis.
 - [ ] Search for the appropriate prediction threshold for every attribute or find a good place to teach themselves.
-- [ ] Plan1: video stream monitor[(picamera on Raspberry Pi)](https://github.com/waveform80/picamera) and transfer video frames.
-- [ ] Plan2: upload image in html and return the analysis result.
-- [ ] Plan3: open camera of laptop and real-time analyis.
+- [ ] More detailed analysis about the experiment results.
+
+Choice:
+- [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
+- [ ] Parse the input script command. 
+- [ ] video stream monitor[(picamera on Raspberry Pi)](https://github.com/waveform80/picamera) and transfer video frames.
+- [ ] upload image in html and return the analysis result.
 - [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis.
-- [x] [Attribute analysis](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/analysis_attr.py).
+
+Done 
+- [x] [Dataset attribute analysis](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/analysis_attr.py).
 - [x] [Data process and load](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/CelebA.py).
 - [x] [Built baseline model(Resnet18 and 101)](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/FaceAttr_baseline_model.py).
 - [x] [Train and evaluate of multi-task](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/solver.py).
