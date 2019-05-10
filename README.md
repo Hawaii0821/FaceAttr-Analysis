@@ -71,7 +71,9 @@ More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Ana
 - The wild images differ from training and test image (aligned)
 
 ## File Description
-
+<details>
+<summary> Click for details. </summary>
+<pre><code>
 | File/Folder | Description |
 | ----------- | ----------- |
 |**Folders**|--------------------------------------------------------------------------------------|
@@ -93,6 +95,8 @@ More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Ana
 |sample_num.png| It shows the distribution of attributes.|
 | DailyNote.md | The recording note of this project.|
 | requirements.txt | The requirements file which save the needed package info. |  
+</pre></code>
+</details>
 
 ## Related Resource
 
