@@ -74,28 +74,65 @@ More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Ana
 <details>
 <summary> Click for details. </summary>
 <pre><code>
-| File/Folder | Description |
-| ----------- | ----------- |
-|**Folders**|--------------------------------------------------------------------------------------|
-| \paper | This folder keeps papers relevant to face attibutes analysis.|
-| \model | The trained model and the evaluatiing result including model dict, loss and accuracy csv files. |
-|\front-back-end| the front end(html) to upload images and the back end(flask) to receive images.|
-|**Main files**|-----------------------------------------------------------------------------------|
-| CelebA.py | This file defines the dataset class for CelebA and provides the data loader function. |
-| FaceAttr_baseline_model.py | This file offers the baseline model class, consisting of feature extraction submodel (resnet etc.) and feature classfier submodel (full connect)|
-|analysis_attr.py | It reflects the relationship between positive samples and negetive samples in CelebA.|
-|solver.py|The file has many functions like initializing, training and evaluating model.|
-|main.py| The entry file of project that owns some important variables.|
-| logger.py | Use tensorboardX for visualization. |
-|camera.py| Open camera and detect face.|
-|haarcascade_frontalface_default.xml| The model dict of detecting face with opencv.|
-|exp_resylt_analysis.py|Show the experiment result and other visual application|
-|**Recoding files**|-----------------------------------------------------------------------|
-| sample_num.csv | It records the number of positive and negative samples on every attribute.|
-|sample_num.png| It shows the distribution of attributes.|
-| DailyNote.md | The recording note of this project.|
-| requirements.txt | The requirements file which save the needed package info. |  
-</pre></code>
+
+<table border='2' cellpadding='5' cellspacing='0'>
+  <tr>
+    <td>File/Folder</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td><b>Folders</b></td>
+    <td>-----------------------------------------------------------------------</td>
+  </tr>
+  <tr>
+    <td>\model</td>
+    <td>The trained model and the evaluatiing result including model dict, loss and accuracy csv files.</td>
+  </tr>
+  <tr>
+    <td>\paper</td>
+    <td>This folder keeps papers relevant to face attibutes analysis.</td>
+  </tr>
+  <tr>
+    <td>\front-back-end</td>
+    <td>the front end(html) to upload images and the back end(flask) to receive images.</td>
+  </tr>
+  <tr>
+    <td><b>Main files</b></td>
+    <td>------------------------------------------------------------------------</td>
+  </tr>
+  <tr>
+    <td>CelebA.py</td>
+    <td>This file defines the dataset class for CelebA and provides the data loader function. </td>
+  </tr>
+  <tr>
+    <td>FaceAttr_baseline_model.py</td>
+    <td>This file offers the baseline model class, consisting of feature extraction submodel (resnet etc.) and feature classfier submodel (full connect)</td>
+  </tr>
+  <tr>
+    <td>analysis_attr.py</td>
+    <td>It reflects the relationship between positive samples and negetive samples in CelebA.</td>
+  </tr>
+  <tr>
+    <td>solver.py</td>
+    <td>The file has many functions like initializing, training and evaluating model.</td>
+  </tr>
+  <tr>
+    <td>main.py</td>
+    <td>The entry file of project that owns some important variables.</td>
+  </tr>
+  <tr>
+    <td>camera.py</td>
+    <td>Open camera and detect face.</td>
+  </tr>
+  <tr>
+    <td>haarcascade_frontalface_default.xml</td>
+    <td>The model dict of detecting face with opencv.</td>
+  </tr>
+ <tr>
+    <td>exp_resylt_analysis.py</td>
+    <td>Show the experiment result and other visual application</td>
+  </tr>
+</table>
 </details>
 
 ## Related Resource
