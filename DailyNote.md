@@ -13,11 +13,38 @@ Some notes, summary or ideas on the process of learning with unfixed format in e
 - find a tradeoff between speed and accuracy.
 - multi-task: face localization and analysis.
 
-## Week9 (19.04.27)
+## Week9 (19.04.27 ~ 04.29)
 
 ### Experiment summary
 
-Add threshold scaling, causing worse accuracy. Maybe we should define some thresholds for some worse attributes by observing the confusion matrix.
+Add threshold scaling, causing worse accuracy (resnet v2). Maybe we should define some thresholds for some worse attributes by observing the confusion matrix.
+
+By observing the accuracy file, we found that the attributes whose accuracy is under 0.85 are:
+
+|Attributes| Accuracy| Reason|
+|------|-----|-------|
+|2. Arched_Eyebrows：柳叶眉 | 83.17%| +|
+|3. Attractive：吸引人的 | 81.77% | - |
+|4. Bags_Under_Eyes：眼袋|82.51%| + |
+|7. Big_Lips：大嘴唇|75.12% |+ |
+| 8. Big_Nose：大鼻子 | 82.60%|+ |
+|26. Oval_Face：椭圆形的脸| 75.04%| + |
+| 28. Pointy_Nose：尖鼻子 | 73.85% | + |
+| 33. Straight_Hair：直发 | 82.73% | + |
+| 38. Wearing_Necklace：戴着项链 | 81.56% | o |
+
+`+` means imbalanced samples, `-` means unmearsuable attributes, `o` means uncertained.
+
+The attributes whose accuracy is above 0.98 are:
+
+|Attributes| Accuracy| Reason|
+|------|----|-----|
+| 5. Bald：秃头 | 98.07% | # |
+|16. Eyeglasses：眼镜 | 99.49% | # |
+| 21. Male：男性 | 98.48%| ! |
+| 36. Wearing_Hat：戴着帽子 | 98.90% | # |
+
+`#` means imbalanced samples but obvious attributes. `!` means balanced sample.
 
 ### Some ideas
 

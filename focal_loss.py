@@ -24,11 +24,11 @@ class FocalLoss(nn.Module):
         super(FocalLoss, self).__init__()
         self.device = torch.device("cuda:" + str(cfg.DEVICE_ID) if torch.cuda.is_available() else "cpu")
 
-    def forward(self, inputs, targets, gamma=2, alpha=None):
+    def forward(self, inputs, targets, gamma=2):
         total_loss = torch.tensor([0.0]).to(self.device)
         batch_size = inputs.size(0)
         
-        self.attr_loss_weight = torch.tensor(cfg.attr_loss_weight).to(self.device)
+        attr_loss_weight = torch.tensor(cfg.attr_loss_weight).to(self.device) # is equal to alpha
         for i in range(batch_size):
             attr_list = []
 
