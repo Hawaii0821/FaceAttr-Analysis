@@ -5,11 +5,12 @@ from torch.utils import data
 import os
 import random
 from PIL import Image
+import config as cfg
 
-# train 162770    validate 202599
-train_end_index = 162770 + 1
-validate_end_index = 202599 + 1
-test_end_index = 384 + 1 # make no sense temporialy.
+# train [1,162770]    validate [162771,182637]  test[182638,202599]
+# train_end_index = 162770 + 1
+# validate_end_index = 182637 + 1
+# test_end_index = 202599 + 1 # make no sense temporialy.
 
 
 # for test
@@ -18,6 +19,7 @@ train_end_index = 128 + 1
 validate_end_index = 256 + 1
 test_end_index = 128 + 1
 """
+
 class CelebA(data.Dataset):
     
     # each image is  218*178;
@@ -87,13 +89,13 @@ class CelebA(data.Dataset):
                 label.append(val)
 
             # split the data by index.
-            if (i+1) < train_end_index:
+            if (i+1) < cfg.train_end_index:
                 self.train_dataset.append([filename, label])
-            elif (i + 1) < validate_end_index:
+            elif (i + 1) < cfg.validate_end_index:
                 self.validate_dataset.append([filename, label])
-            elif (i + 1) < test_end_index:
+            elif (i + 1) < cfg.test_end_index:
                 self.test_dataset.append([filename, label])
-            elif i >= test_end_index:
+            elif i >= cfg.test_end_index:
                 break 
                 
         print('Finished preprocessing the CelebA data set...')

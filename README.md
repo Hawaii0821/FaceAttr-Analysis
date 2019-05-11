@@ -6,7 +6,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 - [x] v1:resnet101 + self-defined fc + BCE loss with logits + average accuracy
 - [x] v2:resnet101 + self-defined fc + BCE loss with logits + threshold rescaling (`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics (recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`)
-- [x]
+- [ ] v3: SENet + fc + tanh + hinge loss + focal loss + metrics... (To do...)
 
 ## Experiment Result
 

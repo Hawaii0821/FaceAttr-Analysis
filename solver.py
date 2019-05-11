@@ -19,34 +19,33 @@ import torch.nn.functional as F
 # from tensorboardX import SummaryWriter
 from FaceAttr_baseline_model import FaceAttrModel
 
+import focal_loss.focal_loss as focal_loss
 
+import config as cfg
 
 class Solver(object):
     
-    def __init__(self, epoches = 100, batch_size = 64, learning_rate = 0.1,
-      model_type = "Resnet18", optim_type = "SGD", momentum = 0.9, pretrained = True,
-      selected_attrs=[], image_dir ="./Img", attr_path = "./Anno/list_attr_celeba.txt",log_dir = "./log", 
-      use_tensorboard = True, attr_loss_weight = [], attr_threshold = []):
+    def __init__(self):
 
-        self.epoches = epoches 
-        self.batch_size = batch_size
-        self.learning_rate = learning_rate
-        self.selected_attrs = selected_attrs
-        self.momentum = momentum
-        self.device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
-        self.image_dir = image_dir
-        self.attr_path = attr_path
-        self.pretrained = pretrained
-        self.model_type = model_type
-        self.build_model(model_type, pretrained)
-        self.create_optim(optim_type)
+        self.epoches = cfg.epoches 
+        self.batch_size = cfg.batch_size
+        self.learning_rate = cfg.learning_rate
+        self.selected_attrs = cfg.selected_attrs
+        self.momentum = cfg.momentum
+        self.device = torch.device("cuda:" + str(cfg.DEVICE_ID) if torch.cuda.is_available() else "cpu")
+        self.image_dir = cfg.image_dir
+        self.attr_path = cfg.attr_path
+        self.pretrained = cfg.pretrained
+        self.model_type = cfg.model_type
+        self.build_model(cfg.model_type, cfg.pretrained)
+        self.create_optim(cfg.optim_type)
         self.train_loader = None
         self.validate_loader = None
-        self.log_dir = log_dir
-        self.use_tensorboard = use_tensorboard
-        self.attr_loss_weight = torch.tensor(attr_loss_weight).to(self.device)
-        self.attr_threshold = attr_threshold
-        self.model_save_path = 'Resnet101' + '-best_model.pth'  # default
+        self.log_dir = cfg.log_dir
+        self.use_tensorboard = cfg.use_tensorboard
+        self.attr_loss_weight = torch.tensor(cfg.attr_loss_weight).to(self.device)
+        self.attr_threshold = cfg.attr_threshold
+        self.model_save_path = cfg.exp_version + '-Resnet101' + '-best_model.pth'  # default
         self.LOADED = False
         
 
@@ -106,7 +105,7 @@ class Solver(object):
         plt.savefig("{}.jpg".format(title))
 
     # self define loss function
-    def multi_loss_fn(self, input_, target):
+    def BCE_loss(self, input_, target):
         # cost_matrix = [1 for i in range(len(self.selected_attrs))]
         total_loss = torch.tensor([0.0]).to(self.device)
         for i in range(self.batch_size):
@@ -114,12 +113,14 @@ class Solver(object):
             for j, attr in enumerate(self.selected_attrs):
                 attr_list.append(target[j][i])
             attr_tensor = torch.tensor(attr_list)
-           
+            """
             loss = F.binary_cross_entropy_with_logits(input_[i].to(self.device),  
                                                     attr_tensor.type(torch.FloatTensor).to(self.device), 
                                                     weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device)) 
-           
-
+            """
+            loss = F.binary_cross_entropy(input_[i].to(self.device),  
+                                          attr_tensor.type(torch.FloatTensor).to(self.device), 
+                                          weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device))
             total_loss += loss
         return total_loss
 
@@ -139,6 +140,11 @@ class Solver(object):
 
         temp_loss = 0.0
         
+        
+        focal_loss_func = None
+        if cfg.loss_type == "focal_loss":
+            focal_loss_func = focal_loss().to(self.device)
+            
         # loss_log = {}
         # start to train in 1 epoch
         # print(self.train_loader)
@@ -151,7 +157,11 @@ class Solver(object):
             self.optim.zero_grad()
             
             #total_loss = self.criterion(outputs[0], labels)
-            total_loss = self.multi_loss_fn(outputs, labels)
+            if cfg.loss_type == "BCE_loss":
+                total_loss = self.BCE_loss(outputs, labels)
+            elif cfg.loss_type == "focal_loss":
+                total_loss = focal_loss_func(outputs, labels)
+
             total_loss.backward()
 
             self.optim.step()
@@ -167,19 +177,21 @@ class Solver(object):
         """
         return temp_loss/(batch_idx + 1)
         
-    def evaluate(self):
+    def evaluate(self, mode):
         """
-        Return: correct_dict: save the average predicting accuracy of every attribute 
+        Mode: validate or test mode
+        Return: correct_dict: save the average predicting accuracy of every attribute
         """
         
         self.model.eval()
-        self.set_transform("validate")
+
+        self.set_transform(mode)
         if self.validate_loader == None:
             self.validate_loader = get_loader(image_dir = self.image_dir, 
                                     attr_path = self.attr_path, 
                                     selected_attrs = self.selected_attrs,
-                                    mode="validate", batch_size=self.batch_size, transform=self.transform)
-            print("validate_dataset: {}".format(len(self.validate_loader.dataset)))
+                                    mode=mode, batch_size=self.batch_size, transform=self.transform)
+            print("{}_dataset: {}".format(mode,len(self.validate_loader.dataset)))
         
         correct_dict = {}
         for attr in self.selected_attrs:
@@ -215,9 +227,9 @@ class Solver(object):
                         if pred == 1 and labels[j][i] == 1:
                             confusion_matrix_dict['TP'][j] += 1
                         if pred == 1 and labels[j][i] == 0:
-                            confusion_matrix_dict['TN'][j] += 1
-                        if pred == 0 and labels[j][i] == 1:
                             confusion_matrix_dict['FP'][j] += 1
+                        if pred == 0 and labels[j][i] == 1:
+                            confusion_matrix_dict['TN'][j] += 1
                         if pred == 0 and labels[j][i] == 0:
                             confusion_matrix_dict['FN'][j] += 1
 
@@ -227,7 +239,7 @@ class Solver(object):
                 correct_dict[attr] = correct_dict[attr] * 100 / len(self.validate_loader.dataset)
                 confusion_matrix_dict['precision'][i] = confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['FP'][i] 
                                                         + confusion_matrix_dict['TP'][i])
-                confusion_matrix_dict['recall'][i]= confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['TN'][i] 
+                confusion_matrix_dict['recall'][i]= confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['FN'][i] 
                                                     + confusion_matrix_dict['TP'][i])
                 confusion_matrix_dict['TPR'][i]= confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['TP'][i] 
                                                     + confusion_matrix_dict['FN'][i])
@@ -256,7 +268,7 @@ class Solver(object):
         for epoch in range(self.epoches):
             running_loss = self.train(epoch)
             print("{}/{} Epoch:  in training process，average loss: {:.4f}".format(epoch + 1, self.epoches, running_loss))
-            average_acc_dict, confusion_matrix_dict = self.evaluate()
+            average_acc_dict, confusion_matrix_dict = self.evaluate("validate")
             print("{}/{} Epoch: in evaluating process，average accuracy:{}".format(epoch + 1, self.epoches, average_acc_dict))
             train_losses.append(running_loss)
             average_acc = 0.0
@@ -277,22 +289,27 @@ class Solver(object):
         # save the accuracy in files
         timestamp = str(int(time.time()))
         eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)]).T 
-        eval_acc_csv.to_csv("./model/" + self.model_type + "-accuracy" + timestamp + ".csv");
+        eval_acc_csv.to_csv("./model/" + cfg.exp_version + '-' +  self.model_type + "-eval_accuracy"+ ".csv");
 
         # save the loss files
         train_losses_csv = pd.DataFrame(train_losses)
-        train_losses_csv.to_csv("./model/" + self.model_type + "-losses" + timestamp +".csv")
+        train_losses_csv.to_csv("./model/" + cfg.exp_version + '-' +  self.model_type + "-losses" +".csv")
 
         # load best model weights
-        self.model_save_path = "./model/" + self.model_type + "-best_model-" + timestamp + ".pth"
+        self.model_save_path = "./model/" + cfg.exp_version + '-' +  self.model_type + "-best_model" + ".pth"
         self.model.load_state_dict(best_model_wts)
         self.LOADED = True
         torch.save(best_model_wts, self.model_save_path)
 
         # save the confusion matrix of each attributes.
-        confusion_matrix_df.to_csv("./model/" + self.model_type + '-confusion_matrix-' + timestamp + '.csv', index=self.selected_attrs)
+        confusion_matrix_df.to_csv("./model/" + cfg.exp_version + '-' +  self.model_type + '-confusion_matrix' + '.csv', index=self.selected_attrs)
 
-
+        # test the model with test dataset.
+        test_acc_dict, confusion_matrix_dict = self.evaluate("test")
+        test_acc_csv = pd.DataFrame(test_acc_dict)
+        test_acc_csv.to_csv("./mode/" + cfg.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
+        test_confusion_matrix_csv = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
+        test_confusion_matrix_csv.to_csv("./model/" + cfg.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
 
     def predict(self, image):
         if not self.LOADED:

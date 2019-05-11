@@ -66,8 +66,11 @@ class FeatureClassfier(nn.Module):
             result_set.append(res)
         """
         res = self.fc(x)
+        """
         for i in range(len(self.selected_attrs)):
             res[i] = self.sigmoid(res[i])
+        """
+        res = self.sigmoid(res)
         return res
 
 

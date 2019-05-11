@@ -2,6 +2,17 @@
 
 Some notes, summary or ideas on the process of learning with unfixed format in every week.
 
+## Week10 (19.05.11)
+
+### Improvement and discussion
+
+- More data visualization on process and result
+- spilit dataset into validate and test dataset.
+- focal loss or OHEM to solve sample imbalance.
+- use the wild images(?).
+- find a tradeoff between speed and accuracy.
+- multi-task: face localization and analysis.
+
 ## Week9 (19.04.27)
 
 ### Experiment summary

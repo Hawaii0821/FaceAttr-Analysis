@@ -44,7 +44,7 @@ def detect_facial_attributes(input_path, output_path, save_video):
             
             ## Finding co-ordinates of face
             X, Y, w, h = coords
-            print(X, Y, w, h)
+            # print(X, Y, w, h)
 
             ## Finding frame size
             H, W, _ = frame.shape
