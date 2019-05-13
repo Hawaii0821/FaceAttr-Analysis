@@ -16,11 +16,9 @@ import time
 
 from CelebA import get_loader
 import torch.nn.functional as F
-# from tensorboardX import SummaryWriter
+import utils
 from FaceAttr_baseline_model import FaceAttrModel
-
-import focal_loss.focal_loss as focal_loss
-
+from focal_loss import FocalLoss
 import config as cfg
 
 class Solver(object):
@@ -41,12 +39,14 @@ class Solver(object):
         self.create_optim(cfg.optim_type)
         self.train_loader = None
         self.validate_loader = None
+        self.test_loader = None
         self.log_dir = cfg.log_dir
         self.use_tensorboard = cfg.use_tensorboard
         self.attr_loss_weight = torch.tensor(cfg.attr_loss_weight).to(self.device)
         self.attr_threshold = cfg.attr_threshold
-        self.model_save_path = cfg.exp_version + '-Resnet101' + '-best_model.pth'  # default
+        self.model_save_path = None
         self.LOADED = False
+        self.start_time = 0
         
 
     def build_model(self, model_type, pretrained):
@@ -54,27 +54,11 @@ class Solver(object):
         self.model = FaceAttrModel(model_type, pretrained, self.selected_attrs).to(self.device)
 
 
-    def build_tensorboard(self):
-        """Build a tensorboard logger."""
-        from logger import Logger
-        self.logger = Logger(self.log_dir)
-
-
     def create_optim(self, optim_type):
         if optim_type == "Adam":
             self.optim = optim.Adam(self.model.parameters(), lr = self.learning_rate)
         elif optim_type == "SGD":
             self.optim = optim.SGD(self.model.parameters(), lr = self.learning_rate, momentum = self.momentum)
-
-
-    def print_network(self, model, name):
-        """Print out the network information."""
-        num_params = 0
-        for p in model.parameters():
-            num_params += p.numel()
-        print(model)
-        print(name)
-        print("The number of parameters: {}".format(num_params))
 
 
     def set_transform(self, mode):
@@ -90,40 +74,24 @@ class Solver(object):
         transform = transforms.Compose(transform)
         self.transform = transform
 
-    
-    # show curve of loss or accuracy
-    def show_curve(self, ys, title):
-        x = np.array([i for i in range(len(ys))])
-        y = np.array(ys)
-        plt.figure()
-        plt.plot(x, y, c='b')
-        plt.axis()
-        plt.title('{} curve'.format(title))
-        plt.xlabel('epoch')
-        plt.ylabel('{} value'.format(title))
-        plt.show()
-        plt.savefig("{}.jpg".format(title))
 
     # self define loss function
     def BCE_loss(self, input_, target):
         # cost_matrix = [1 for i in range(len(self.selected_attrs))]
-        total_loss = torch.tensor([0.0]).to(self.device)
-        for i in range(self.batch_size):
-            attr_list = []
-            for j, attr in enumerate(self.selected_attrs):
-                attr_list.append(target[j][i])
-            attr_tensor = torch.tensor(attr_list)
-            """
-            loss = F.binary_cross_entropy_with_logits(input_[i].to(self.device),  
-                                                    attr_tensor.type(torch.FloatTensor).to(self.device), 
-                                                    weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device)) 
-            """
-            loss = F.binary_cross_entropy(input_[i].to(self.device),  
-                                          attr_tensor.type(torch.FloatTensor).to(self.device), 
-                                          weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device))
-            total_loss += loss
-        return total_loss
+        loss = F.binary_cross_entropy(input_.to(self.device),  
+                                    target.type(torch.FloatTensor).to(self.device), 
+                                    weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device))
+        return loss
 
+    def load_model_dict(self, model_state_dict_path):
+        self.model = None
+        self.model_save_path = model_state_dict_path
+        self.model.load_state_dict(torch.load(model_state_dict_path))
+        print("The model has loaded !")
+
+    def save_model_dict(self, model_state_dict_path):
+        torch.save(self.model.state_dict(), model_state_dict_path)
+        print("The model has saved!")
 
     def train(self, epoch):
         """
@@ -136,45 +104,35 @@ class Solver(object):
         if self.train_loader == None:
             self.train_loader = get_loader(image_dir = self.image_dir, attr_path = self.attr_path, 
         selected_attrs = self.selected_attrs, mode="train", batch_size=self.batch_size, transform=self.transform)
-            print("train_dataset: {}".format(len(self.train_loader.dataset)))
+            print("train_dataset size: {}".format(len(self.train_loader.dataset)))
 
         temp_loss = 0.0
         
-        
         focal_loss_func = None
         if cfg.loss_type == "focal_loss":
-            focal_loss_func = focal_loss().to(self.device)
+            focal_loss_func = FocalLoss()
             
-        # loss_log = {}
-        # start to train in 1 epoch
-        # print(self.train_loader)
         for batch_idx, samples in enumerate(self.train_loader):
-            print("training batch_idx : {}".format(batch_idx))
+
             images, labels = samples["image"], samples["label"]
             #print(images, labels)
             images= images.to(self.device)
             outputs = self.model(images)
             self.optim.zero_grad()
             
-            #total_loss = self.criterion(outputs[0], labels)
             if cfg.loss_type == "BCE_loss":
-                total_loss = self.BCE_loss(outputs, labels)
+                total_loss = self.BCE_loss(outputs, labels)  
             elif cfg.loss_type == "focal_loss":
                 total_loss = focal_loss_func(outputs, labels)
 
             total_loss.backward()
-
+            
             self.optim.step()
             temp_loss += total_loss.item()
             
-        # log the training info 
-        """
-        for attr in self.selected_attrs:
-            loss_log[attr] /= batch_idx + 1
-        if self.use_tensorboard:
-            for tag, value in loss_log.items():
-                self.logger.scalar_summary(tag, value, epoch+1)   
-        """
+            if batch_idx % 100 == 0:
+                print("training batch_idx : {}, time: {}".format(batch_idx, utils.timeSince(self.start_time)))
+
         return temp_loss/(batch_idx + 1)
         
     def evaluate(self, mode):
@@ -191,7 +149,7 @@ class Solver(object):
                                     attr_path = self.attr_path, 
                                     selected_attrs = self.selected_attrs,
                                     mode=mode, batch_size=self.batch_size, transform=self.transform)
-            print("{}_dataset: {}".format(mode,len(self.validate_loader.dataset)))
+            print("{}_dataset size: {}".format(mode,len(self.validate_loader.dataset)))
         
         correct_dict = {}
         for attr in self.selected_attrs:
@@ -210,10 +168,18 @@ class Solver(object):
 
         with torch.no_grad():
             for batch_idx, samples in enumerate(self.validate_loader):
+                """
+                    data_loader:
+                    {
+                        'image': [batch_size, C, H, W],
+                        'label': [batch_size, num_attr]
+                    }
+                """
                 images, labels = samples["image"], samples["label"]
                 images = images.to(self.device)
+                labels = labels.tolist()
                 outputs = self.model(images)
-
+                print("{} batch_idx : {}, time: {}".format(mode, batch_idx, utils.timeSince(self.start_time)))
                 # get the accuracys of the current batch
                 for i in range(self.batch_size):
                     for j, attr in enumerate(self.selected_attrs):
@@ -221,16 +187,16 @@ class Solver(object):
                         pred = 1 if pred > self.attr_threshold[j] else 0
 
                         # record accuracy
-                        if pred == labels[j][i]:
+                        if pred == labels[i][j]:
                             correct_dict[attr] = correct_dict[attr] + 1
 
-                        if pred == 1 and labels[j][i] == 1:
+                        if pred == 1 and labels[i][j] == 1:
                             confusion_matrix_dict['TP'][j] += 1
-                        if pred == 1 and labels[j][i] == 0:
+                        if pred == 1 and labels[i][j] == 0:
                             confusion_matrix_dict['FP'][j] += 1
-                        if pred == 0 and labels[j][i] == 1:
+                        if pred == 0 and labels[i][j] == 1:
                             confusion_matrix_dict['TN'][j] += 1
-                        if pred == 0 and labels[j][i] == 0:
+                        if pred == 0 and labels[i][j] == 0:
                             confusion_matrix_dict['FN'][j] += 1
 
             i = 0
@@ -238,14 +204,14 @@ class Solver(object):
             for attr in self.selected_attrs:
                 correct_dict[attr] = correct_dict[attr] * 100 / len(self.validate_loader.dataset)
                 confusion_matrix_dict['precision'][i] = confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['FP'][i] 
-                                                        + confusion_matrix_dict['TP'][i])
+                                                        + confusion_matrix_dict['TP'][i] + 1e-6)
                 confusion_matrix_dict['recall'][i]= confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['FN'][i] 
-                                                    + confusion_matrix_dict['TP'][i])
+                                                    + confusion_matrix_dict['TP'][i] + 1e-6)
                 confusion_matrix_dict['TPR'][i]= confusion_matrix_dict['TP'][i]/(confusion_matrix_dict['TP'][i] 
-                                                    + confusion_matrix_dict['FN'][i])
+                                                    + confusion_matrix_dict['FN'][i] + 1e-6)
                 confusion_matrix_dict['FPR'][i]= confusion_matrix_dict['FP'][i]/(confusion_matrix_dict['FP'][i] 
-                                                    + confusion_matrix_dict['TN'][i])
-                confusion_matrix_dict['F1'][i] = 2*confusion_matrix_dict['precision']*confusion_matrix_dict['recall']/(confusion_matrix_dict['precision'] + confusion_matrix_dict['recall'])                                                                          
+                                                    + confusion_matrix_dict['TN'][i] + 1e-6)
+                confusion_matrix_dict['F1'][i] = 2*confusion_matrix_dict['precision'][i]*confusion_matrix_dict['recall'][i]/(confusion_matrix_dict['precision'][i] + confusion_matrix_dict['recall'][i] + 1e-6)                                                                          
                 i += 1
 
         return correct_dict, confusion_matrix_dict
@@ -264,12 +230,14 @@ class Solver(object):
 
         for attr in self.selected_attrs:
             eval_acc_dict[attr] = []
-
+        self.start_time = time.time()
         for epoch in range(self.epoches):
             running_loss = self.train(epoch)
             print("{}/{} Epoch:  in training process，average loss: {:.4f}".format(epoch + 1, self.epoches, running_loss))
+            print("The running time since the start is : {} ".format(utils.timeSince(self.start_time)))
             average_acc_dict, confusion_matrix_dict = self.evaluate("validate")
             print("{}/{} Epoch: in evaluating process，average accuracy:{}".format(epoch + 1, self.epoches, average_acc_dict))
+            print("The running time since the start is : {} ".format(utils.timeSince(self.start_time)))
             train_losses.append(running_loss)
             average_acc = 0.0
 
@@ -280,14 +248,13 @@ class Solver(object):
             average_acc /= len(self.selected_attrs) # overall accuracy
             
             # find a better model, save it 
-            if average_acc > best_acc: 
+            if average_acc > best_acc and epoch > self.epoches / 2: # for save time 
                 best_acc = average_acc
                 best_model_wts = copy.deepcopy(self.model.state_dict())
                 confusion_matrix_df = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
 
 
         # save the accuracy in files
-        timestamp = str(int(time.time()))
         eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)]).T 
         eval_acc_csv.to_csv("./model/" + cfg.exp_version + '-' +  self.model_type + "-eval_accuracy"+ ".csv");
 
@@ -296,18 +263,15 @@ class Solver(object):
         train_losses_csv.to_csv("./model/" + cfg.exp_version + '-' +  self.model_type + "-losses" +".csv")
 
         # load best model weights
-        self.model_save_path = "./model/" + cfg.exp_version + '-' +  self.model_type + "-best_model" + ".pth"
+        self.model_save_path = "./model/" + cfg.exp_version + '-' +  self.model_type + "-best_model_params" + ".pth"
         self.model.load_state_dict(best_model_wts)
         self.LOADED = True
         torch.save(best_model_wts, self.model_save_path)
 
-        # save the confusion matrix of each attributes.
-        confusion_matrix_df.to_csv("./model/" + cfg.exp_version + '-' +  self.model_type + '-confusion_matrix' + '.csv', index=self.selected_attrs)
-
         # test the model with test dataset.
         test_acc_dict, confusion_matrix_dict = self.evaluate("test")
-        test_acc_csv = pd.DataFrame(test_acc_dict)
-        test_acc_csv.to_csv("./mode/" + cfg.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
+        test_acc_csv = pd.DataFrame(test_acc_dict, index=['accuracy'])
+        test_acc_csv.to_csv("./model/" + cfg.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
         test_confusion_matrix_csv = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
         test_confusion_matrix_csv.to_csv("./model/" + cfg.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
 
@@ -316,7 +280,6 @@ class Solver(object):
             # load the best model dict.
             self.model.load_state_dict(torch.load("./" + self.model_save_path))
             self.LOADED = True
-
         self.model.eval()
         with torch.no_grad():
             self.set_transform("predict")

@@ -7,7 +7,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 ### Dataset
 
 - CelebA: about 162770 train images and  about 39829 test images. （with precropped images, but it's better to try wild images.）
-- LFWA: todo....(Can we train a model on different dataset? Yeah) 
+- LFWA: todo....(Can we train a model on different datasets? Yeah)
 
 ### Methods
 

@@ -6,6 +6,8 @@ import os
 import random
 from PIL import Image
 import config as cfg
+import pdb
+from torchvision import datasets, transforms, models
 
 # train [1,162770]    validate [162771,182637]  test[182638,202599]
 # train_end_index = 162770 + 1
@@ -60,7 +62,9 @@ class CelebA(data.Dataset):
             dataset = self.test_dataset
         filename, label = dataset[index]
         image = Image.open(os.path.join(self.image_folder, filename)) 
-        return {"image": self.transform(image), "label": label}
+        if self.transform != None:
+            image = self.transform(image)
+        return {"image": image, "label": label}
 
     def preprocess(self):
         lines = [line.rstrip() for line in open(self.attr_file, 'r')]
@@ -91,10 +95,13 @@ class CelebA(data.Dataset):
             # split the data by index.
             if (i+1) < cfg.train_end_index:
                 self.train_dataset.append([filename, label])
+
             elif (i + 1) < cfg.validate_end_index:
                 self.validate_dataset.append([filename, label])
+
             elif (i + 1) < cfg.test_end_index:
                 self.test_dataset.append([filename, label])
+                
             elif i >= cfg.test_end_index:
                 break 
                 
@@ -156,6 +163,31 @@ class CelebA(data.Dataset):
             return partition_frame
      
 
+def collate_fn(batch_data):
+    """
+    batch_data = [{'image': [batch_size, 3, 224, 224], 'label': [batch_size, num_attr]}]
+    """
+    new_batch = {'image': None, 'label': None}
+
+    new_images = None
+    new_labels = None
+    for idx, batch in enumerate(batch_data):
+        image = batch['image']
+        label = batch['label']
+
+        if idx == 0:
+            new_images = image.unsqueeze(0)
+            new_labels = torch.tensor(label).unsqueeze(0)
+        else:
+            image = image.unsqueeze(0)
+            new_images = torch.cat([new_images, image], dim=0)
+            label = torch.tensor(label).unsqueeze(0)
+            new_labels = torch.cat([new_labels, label], dim=0)
+    new_batch['image'] = new_images
+    new_batch['label'] = new_labels
+
+    return new_batch
+
 # 218 * 178
 def get_loader(image_dir, attr_path, selected_attrs,
                batch_size, mode='train', num_workers=1, transform = None):
@@ -165,5 +197,31 @@ def get_loader(image_dir, attr_path, selected_attrs,
                                   batch_size=batch_size,
                                   shuffle=(mode=='train'),
                                   num_workers=num_workers,
-                                  drop_last = True)
+                                  drop_last = True,
+                                  collate_fn=collate_fn) # drop_last：告诉如何处理数据集长度除于batch_size余下的数据。True就抛弃，否则保留
     return data_loader
+
+    """
+    data_loader:
+    {
+        'image': [batch_size, C, H, W],
+        'label': [batch_size, num_attr]
+    }
+    """
+def test():
+    transform = []
+    transform.append(transforms.Resize(size=(224, 224)))
+    transform.append(transforms.ToTensor())
+    transform.append(transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                 std=[0.229, 0.224, 0.225]))
+    transform = transforms.Compose(transform)
+    data_loader = get_loader(cfg.image_dir, cfg.attr_path, cfg.selected_attrs, 2, transform=transform)
+    for data in data_loader:
+        print(data)
+        image = data["image"]
+        label = data['label']
+        print(image.size())
+        print(len(label))
+        exit()
+
+# test() √

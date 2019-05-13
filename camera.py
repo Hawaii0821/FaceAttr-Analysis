@@ -18,6 +18,7 @@ from pathlib import Path
 )
 
 @click.option("--save_video", "-s", default=True, type=bool, help="Want to save video?")
+
 def detect_facial_attributes(input_path, output_path, save_video):
     path = Path(input_path)
 
@@ -50,8 +51,8 @@ def detect_facial_attributes(input_path, output_path, save_video):
             H, W, _ = frame.shape
 
             ## Computing larger face co-ordinates
-            X_1, X_2 = (max(0, X - int(w * 0.5)), min(X + int(1.5 * w), W))
-            Y_1, Y_2 = (max(0, Y - int(0.5 * h)), min(Y + int(1.5 * h), H))
+            X_1, X_2 = (max(0, X - int(w * 5)), min(X + int(5 * w), W))
+            Y_1, Y_2 = (max(0, Y - int(5 * h)), min(Y + int(5 * h), H))
 
             ## Cropping face and changing BGR To RGB
             img_cp = frame[Y_1:Y_2, X_1:X_2].copy()

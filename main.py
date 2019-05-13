@@ -21,4 +21,10 @@ if __name__ == "__main__":
 
     # too more params to send.... not a good way....use the config.py to improve it
     solver = Solver()
-    solver.fit()
+    try:
+        solver.fit()
+    except KeyboardInterrupt:
+        print("early stop...")
+        print("save the model dict....")
+        solver.save_model_dict("./model/early_stop_model.pth")
+        print("Saved!")
