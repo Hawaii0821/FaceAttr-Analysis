@@ -4,23 +4,38 @@ import random
 import numpy as np 
 import torch
 import pandas as pd 
+import argparse
+from utils import seed_everything
 
-# ------------------------------------------------ # 
-# make sure the same results with same params in different running time.
-def seed_everything(seed=1234):
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.backends.cudnn.deterministic = True
+parser = argparse.ArgumentParser(description='FaceAtrr')
+parser.add_argument('--model_type', choices=['Resnet34','Resnet3450','Resnet101','Resnet152','gc_resnet101'], default='gc_resnet101')
+parser.add_argument('--batch_size', default=256, type=int, help='batch_size')
+parser.add_argument('--epoches', default=100, type=int, help='epoches')
+parser.add_argument('--learning_rate', default=1e-3, type=float, help='learning_rate')
+parser.add_argument('--momentum', default=0.9, type=float, help='momentum')
+parser.add_argument('--optim_type', choices=['SGD','Adam'], default='SGD')
+parser.add_argument('--pretrained', action='store_true', default=True)
+parser.add_argument("--loss_type", choices=['BCE_loss', 'focal_loss'], default='BCE_loss')
+parser.add_argument("--exp_version", default="v3")
+args = parser.parse_args()
 
+epoches = args.epoches
+batch_size = args.batch_size
+learning_rate = args.learning_rate
+model_type = args.model_type  
+optim_type = args.optim_type
+momentum = args.momentum
+pretrained = args.pretrained
+loss_type = args.losstype
+exp_version = args.exp_version
 #--------------- exe ----------------------------- # 
 if __name__ == "__main__":
     seed_everything()
 
     # too more params to send.... not a good way....use the config.py to improve it
-    solver = Solver()
+    solver = Solver(epoches=epoches, batch_size=batch_size, learning_rate=learning_rate, model_type=model_type,
+                    optim_type=model_type, momentum=momentum, pretrained=pretrained, loss_type=loss_type, 
+                    exp_version=exp_version)
     try:
         solver.fit()
     except KeyboardInterrupt:

@@ -2,6 +2,8 @@ import time
 import matplotlib.pyplot as plt
 import math 
 import numpy as np
+import random 
+import os
 
 """
 class Logger(object):
@@ -25,7 +27,7 @@ def timeSince(since):
     m -= h * 60
     return '%d h %d m %d s'%(h, m, s)
 
-        # show curve of loss or accuracy
+# show curve of loss or accuracy
 def show_curve(self, ys, title):
     x = np.array([i for i in range(len(ys))])
     y = np.array(ys)
@@ -37,3 +39,13 @@ def show_curve(self, ys, title):
     plt.ylabel('{} value'.format(title))
     plt.show()
     plt.savefig("{}.jpg".format(title))
+
+# ------------------------------------------------ # 
+# make sure the same results with same params in different running time.
+def seed_everything(seed=1234):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True

@@ -2,6 +2,7 @@ from __future__ import print_function, division
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
+from GC_resnet import *
 
 """
 Adopt the pretrained resnet model to extract feature of the feature
@@ -18,6 +19,8 @@ class FeatureExtraction(nn.Module):
             self.model = models.resnet101(pretrained=pretrained)
         elif model_type == "Resnet152":
             self.model = models.resnet152(pretrained=pretrained)
+        elif model_type == "GCNet":
+            self.model = gc_resnet101(2)
         self.model = nn.Sequential(*list(self.model.children())[:-1])
 
     def forward(self, image_batch):

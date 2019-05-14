@@ -23,20 +23,20 @@ import config as cfg
 
 class Solver(object):
     
-    def __init__(self):
+    def __init__(self, epoches, batch_size, learning_rate, model_type, optim_type, momentum, pretrained, loss_type, exp_version):
 
-        self.epoches = cfg.epoches 
-        self.batch_size = cfg.batch_size
-        self.learning_rate = cfg.learning_rate
+        self.epoches = epoches 
+        self.batch_size = batch_size
+        self.learning_rate = learning_rate
         self.selected_attrs = cfg.selected_attrs
-        self.momentum = cfg.momentum
+        self.momentum = momentum
         self.device = torch.device("cuda:" + str(cfg.DEVICE_ID) if torch.cuda.is_available() else "cpu")
         self.image_dir = cfg.image_dir
         self.attr_path = cfg.attr_path
-        self.pretrained = cfg.pretrained
-        self.model_type = cfg.model_type
-        self.build_model(cfg.model_type, cfg.pretrained)
-        self.create_optim(cfg.optim_type)
+        self.pretrained = pretrained
+        self.model_type = model_type
+        self.build_model(model_type, pretrained)
+        self.create_optim(optim_type)
         self.train_loader = None
         self.validate_loader = None
         self.test_loader = None
@@ -47,6 +47,8 @@ class Solver(object):
         self.model_save_path = None
         self.LOADED = False
         self.start_time = 0
+        self.loss_type = loss_type
+        self.exp_version = exp_version
         torch.cuda.set_device(cfg.DEVICE_ID)
 
     def build_model(self, model_type, pretrained):
@@ -57,9 +59,11 @@ class Solver(object):
     def create_optim(self, optim_type):
         if optim_type == "Adam":
             self.optim = optim.Adam(self.model.parameters(), lr = self.learning_rate)
+            self.scheduler = optim.lr_scheduler.MultiStepLR(self.optim, [30,80], gamma=0.1)
+
         elif optim_type == "SGD":
             self.optim = optim.SGD(self.model.parameters(), lr = self.learning_rate, momentum = self.momentum)
-
+            self.scheduler = optim.lr_scheduler.MultiStepLR(self.optim, [30,80], gamma=0.1)
 
     def set_transform(self, mode):
         transform = []
@@ -107,34 +111,37 @@ class Solver(object):
         # to avoid loading dataset repeatedly
         if self.train_loader == None:
             self.train_loader = get_loader(image_dir = self.image_dir, attr_path = self.attr_path, 
-        selected_attrs = self.selected_attrs, mode="train", batch_size=self.batch_size, transform=self.transform)
+                                            selected_attrs = self.selected_attrs, mode="train", 
+                                            batch_size=self.batch_size, transform=self.transform)
             print("train_dataset size: {}".format(len(self.train_loader.dataset)))
 
         temp_loss = 0.0
-        
             
         for batch_idx, samples in enumerate(self.train_loader):
-
             images, labels = samples["image"], samples["label"]
-            #print(images, labels)
+
             images= images.to(self.device)
-            # cpu_target = labels
-            # labels = labels.to(self.device)
+            
             outputs = self.model(images)
+
             self.optim.zero_grad()
             
-            if cfg.loss_type == "BCE_loss":
+            if self.loss_type == "BCE_loss":
                 total_loss = self.BCE_loss(outputs, labels)  
-            elif cfg.loss_type == "focal_loss":
+
+            elif self.loss_type == "focal_loss":
                 total_loss = self.focal_loss(outputs, labels)
 
             total_loss.backward()
             
             self.optim.step()
+            
             temp_loss += total_loss.item()
             
-            if batch_idx % 100 == 0:
-                print("training batch_idx : {}, time: {}".format(batch_idx, utils.timeSince(self.start_time)))
+            if batch_idx % 50 == 0:
+                print("Epoch: {}/{}, training batch_idx : {}/{}, time: {}, loss: {}".format(epoch, self.epoches, 
+                                batch_idx, int(len(self.train_loader.dataset)/self.batch_size), 
+                                utils.timeSince(self.start_time), total_loss.item()))
 
         return temp_loss/(batch_idx + 1)
         
@@ -143,16 +150,22 @@ class Solver(object):
         Mode: validate or test mode
         Return: correct_dict: save the average predicting accuracy of every attribute
         """
-        
         self.model.eval()
-
         self.set_transform(mode)
-        if self.validate_loader == None:
+        data_loader = None
+        if self.validate_loader == None and mode == "validate":
             self.validate_loader = get_loader(image_dir = self.image_dir, 
                                     attr_path = self.attr_path, 
                                     selected_attrs = self.selected_attrs,
                                     mode=mode, batch_size=self.batch_size, transform=self.transform)
-            print("{}_dataset size: {}".format(mode,len(self.validate_loader.dataset)))
+            data_loader = self.validate_loader
+        elif self.test_loader == None and mode == "test":
+            self.test_loader = get_loader(image_dir = self.image_dir, 
+                                    attr_path = self.attr_path, 
+                                    selected_attrs = self.selected_attrs,
+                                    mode=mode, batch_size=self.batch_size, transform=self.transform)
+            data_loader = self.test_loader
+        print("{}_dataset size: {}".format(mode,len(data_loader.dataset)))
         
         correct_dict = {}
         for attr in self.selected_attrs:
@@ -170,7 +183,7 @@ class Solver(object):
         confusion_matrix_dict['F1'] = [0 for i in range(len(self.selected_attrs))]
 
         with torch.no_grad():
-            for batch_idx, samples in enumerate(self.validate_loader):
+            for batch_idx, samples in enumerate(data_loader):
                 """
                     data_loader:
                     {
@@ -182,8 +195,7 @@ class Solver(object):
                 images = images.to(self.device)
                 labels = labels.tolist()
                 outputs = self.model(images)
-                print("{} batch_idx : {}, time: {}".format(mode, batch_idx, utils.timeSince(self.start_time)))
-                # get the accuracys of the current batch
+               
                 for i in range(self.batch_size):
                     for j, attr in enumerate(self.selected_attrs):
                         pred = outputs[i].data[j]
@@ -201,7 +213,10 @@ class Solver(object):
                             confusion_matrix_dict['TN'][j] += 1
                         if pred == 0 and labels[i][j] == 0:
                             confusion_matrix_dict['FN'][j] += 1
-
+                if batch_idx % 50 == 0:
+                    print("[Test//Evaluate]: Batch_idx : {}/{}, time: {}".format( 
+                                batch_idx, int(len(data_loader.dataset)/self.batch_size), 
+                                utils.timeSince(self.start_time)))
             i = 0
             # get the average accuracy
             for attr in self.selected_attrs:
@@ -216,7 +231,6 @@ class Solver(object):
                                                     + confusion_matrix_dict['TN'][i] + 1e-6)
                 confusion_matrix_dict['F1'][i] = 2*confusion_matrix_dict['precision'][i]*confusion_matrix_dict['recall'][i]/(confusion_matrix_dict['precision'][i] + confusion_matrix_dict['recall'][i] + 1e-6)                                                                          
                 i += 1
-
         return correct_dict, confusion_matrix_dict
 
     def fit(self):
@@ -259,14 +273,14 @@ class Solver(object):
 
         # save the accuracy in files
         eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)]).T 
-        eval_acc_csv.to_csv("./model/" + cfg.exp_version + '-' +  self.model_type + "-eval_accuracy"+ ".csv");
+        eval_acc_csv.to_csv("./model/" + self.exp_version + '-' +  self.model_type + "-eval_accuracy"+ ".csv");
 
         # save the loss files
         train_losses_csv = pd.DataFrame(train_losses)
-        train_losses_csv.to_csv("./model/" + cfg.exp_version + '-' +  self.model_type + "-losses" +".csv")
+        train_losses_csv.to_csv("./model/" + self.exp_version + '-' +  self.model_type + "-losses" +".csv")
 
         # load best model weights
-        self.model_save_path = "./model/" + cfg.exp_version + '-' +  self.model_type + "-best_model_params" + ".pth"
+        self.model_save_path = "./model/" + self.exp_version + '-' +  self.model_type + "-best_model_params" + ".pth"
         self.model.load_state_dict(best_model_wts)
         self.LOADED = True
         torch.save(best_model_wts, self.model_save_path)
@@ -274,9 +288,9 @@ class Solver(object):
         # test the model with test dataset.
         test_acc_dict, confusion_matrix_dict = self.evaluate("test")
         test_acc_csv = pd.DataFrame(test_acc_dict, index=['accuracy'])
-        test_acc_csv.to_csv("./model/" + cfg.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
+        test_acc_csv.to_csv("./model/" + self.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
         test_confusion_matrix_csv = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
-        test_confusion_matrix_csv.to_csv("./model/" + cfg.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
+        test_confusion_matrix_csv.to_csv("./model/" + self.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
 
     def predict(self, image):
         if not self.LOADED:
