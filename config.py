@@ -1,23 +1,22 @@
 import torch
 
 # ---------------- all data on the same device ----#
-DEVICE_ID = 3
+DEVICE_ID = 4
 
 # ---------------- experiment mark -----------------#
 exp_version = "v3"
 
 
 # -----------------dataset spilit---------------------#
-"""
 train_end_index = 162770 + 1
 validate_end_index = 182637 + 1
 test_end_index = 202599 + 1 
-"""
+
 
 # for test
-train_end_index = 128 + 1
-validate_end_index = 256 + 1
-test_end_index = 320 + 1
+#train_end_index = 128 + 1
+#validate_end_index = 256 + 1
+#test_end_index = 320 + 1
 
 
 
@@ -27,19 +26,19 @@ log_dir = "./log"
 # You should download the celeba dataset in the root dir.
 
 # the dataset local path.
-image_dir = "../CelebA/Img/img_align_celeba/" 
-attr_path = "../CelebA/Anno/list_attr_celeba.txt"
+# image_dir = "../CelebA/Img/img_align_celeba/" 
+# attr_path = "../CelebA/Anno/list_attr_celeba.txt"
 
 #the dataset path run on server.
-#image_dir = "../../dataset/CelebA/Img/img_align_celeba/" 
-#attr_path = "../../dataset/CelebA/Anno/list_attr_celeba.txt"
+image_dir = "../../dataset/CelebA/Img/img_align_celeba/" 
+attr_path = "../../dataset/CelebA/Anno/list_attr_celeba.txt"
 
 # ----------- model/train/test configuration ---- #
 epoches = 50  # 50
 
 batch_size = 128
 
-learning_rate = 0.0001
+learning_rate = 0.001
 
 model_type = "Resnet101"  # 34 50 101 152
 
@@ -50,11 +49,11 @@ momentum = 0.9
 pretrained = True
 
 # ------------- loss type----------------------------- #
-loss_type = "BCE_loss"  #  focal_loss
+# loss_type = "BCE_loss"  #  focal_loss
 loss_type = "focal_loss"
 
 # Focal loss as described in https://arxiv.org/pdf/1708.02002.pdf
-focal_loss_alpha = 1
+focal_loss_alpha = 0.8
 focal_loss_gamma = 2
 size_average = False
 # -------------- Attribute configuration --------- #

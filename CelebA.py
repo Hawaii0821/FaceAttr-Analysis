@@ -208,6 +208,7 @@ def get_loader(image_dir, attr_path, selected_attrs,
         'label': [batch_size, num_attr]
     }
     """
+    
 def test():
     transform = []
     transform.append(transforms.Resize(size=(224, 224)))

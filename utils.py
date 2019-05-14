@@ -2,6 +2,7 @@ import time
 import matplotlib.pyplot as plt
 import math 
 import numpy as np
+
 """
 class Logger(object):
     def __init__(self, log_dir):
