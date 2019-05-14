@@ -83,6 +83,10 @@ class Solver(object):
                                     weight=self.attr_loss_weight.type(torch.FloatTensor).to(self.device))
         return loss
 
+    def focal_loss(self, inputs, targets, gamma=2):
+        focal_loss_func = FocalLoss()
+        return focal_loss_func(inputs, targets)
+
     def load_model_dict(self, model_state_dict_path):
         self.model = None
         self.model_save_path = model_state_dict_path
@@ -108,22 +112,20 @@ class Solver(object):
 
         temp_loss = 0.0
         
-        focal_loss_func = None
-        if cfg.loss_type == "focal_loss":
-            focal_loss_func = FocalLoss()
             
         for batch_idx, samples in enumerate(self.train_loader):
 
             images, labels = samples["image"], samples["label"]
             #print(images, labels)
             images= images.to(self.device)
+            labels = labels.to(self.device)
             outputs = self.model(images)
             self.optim.zero_grad()
             
             if cfg.loss_type == "BCE_loss":
                 total_loss = self.BCE_loss(outputs, labels)  
             elif cfg.loss_type == "focal_loss":
-                total_loss = focal_loss_func(outputs, labels)
+                total_loss = self.focal_loss(outputs, labels)
 
             total_loss.backward()
             

@@ -9,27 +9,12 @@ class FocalLoss(nn.Module):
         super(FocalLoss, self).__init__()
         self.device = torch.device("cuda:" + str(cfg.DEVICE_ID) if torch.cuda.is_available() else "cpu")
 
-    def forward(self, inputs, targets, gamma=2):        
-        tmp_input = inputs.clone()
-        reverse_input = 1 - inputs
-        pt = torch.where(targets==1, tmp_input, reverse_input)
-        weights = torch.FloatTensor(cfg.attr_loss_weight) * torch.pow((1 - pt), gamma)
-        weights = Variable(weights, requires_grad = False)
-        loss = F.binary_cross_entropy(inputs.to(self.device), targets.type(torch.FloatTensor).to(self.device), weight=weights)
-    
-        if cfg.size_average:
-            loss = loss.mean()
-        else:
-            loss = loss.sum()
-        return loss
+    def forward(self, inputs, targets, alpha_factor, focal_weight, gamma=2):        
+        alpha_factor = torch.where(torch.eq(targets, 1), alpha_factor, 1. - alpha_factor)
+        focal_weight = torch.where(torch.eq(targets, 1), 1. - inputs, inputs)
+        focal_weight = alpha_factor * torch.pow(focal_weight, gamma)
+        targets = targets.type(torch.FloatTensor)
+        bce = -(targets * torch.log(inputs) + (1. - targets) * torch.log(1. - inputs))
+        cls_loss = focal_weight * bce
+        return cls_loss.mean()
 
-def test():
-    device = torch.device("cuda:" + str(cfg.DEVICE_ID) if torch.cuda.is_available() else "cpu")
-    criterion = FocalLoss()
-    inputs = torch.rand([4,40])
-    targets = torch.rand([4,40])
-    loss = criterion(inputs, targets)
-    # loss.backward()
-    print(loss)
-
-test()
