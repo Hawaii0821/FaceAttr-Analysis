@@ -2,7 +2,7 @@ from __future__ import print_function, division
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
-from GC_resnet import *
+from Module.GC_resnet import * 
 
 """
 Adopt the pretrained resnet model to extract feature of the feature

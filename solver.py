@@ -18,7 +18,7 @@ from CelebA import get_loader
 import torch.nn.functional as F
 import utils
 from FaceAttr_baseline_model import FaceAttrModel
-from focal_loss import FocalLoss
+from Module.focal_loss import FocalLoss
 import config as cfg
 
 class Solver(object):
@@ -273,14 +273,14 @@ class Solver(object):
 
         # save the accuracy in files
         eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)]).T 
-        eval_acc_csv.to_csv("./model/" + self.exp_version + '-' +  self.model_type + "-eval_accuracy"+ ".csv");
+        eval_acc_csv.to_csv("./result/" + self.exp_version + '-' +  self.model_type + "-eval_accuracy"+ ".csv");
 
         # save the loss files
         train_losses_csv = pd.DataFrame(train_losses)
-        train_losses_csv.to_csv("./model/" + self.exp_version + '-' +  self.model_type + "-losses" +".csv")
+        train_losses_csv.to_csv("./result/" + self.exp_version + '-' +  self.model_type + "-losses" +".csv")
 
         # load best model weights
-        self.model_save_path = "./model/" + self.exp_version + '-' +  self.model_type + "-best_model_params" + ".pth"
+        self.model_save_path = "./result/" + self.exp_version + '-' +  self.model_type + "-best_model_params" + ".pth"
         self.model.load_state_dict(best_model_wts)
         self.LOADED = True
         torch.save(best_model_wts, self.model_save_path)
@@ -288,9 +288,9 @@ class Solver(object):
         # test the model with test dataset.
         test_acc_dict, confusion_matrix_dict = self.evaluate("test")
         test_acc_csv = pd.DataFrame(test_acc_dict, index=['accuracy'])
-        test_acc_csv.to_csv("./model/" + self.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
+        test_acc_csv.to_csv("./result/" + self.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
         test_confusion_matrix_csv = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
-        test_confusion_matrix_csv.to_csv("./model/" + self.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
+        test_confusion_matrix_csv.to_csv("./result/" + self.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
 
     def predict(self, image):
         if not self.LOADED:

@@ -107,4 +107,5 @@ venv.bak/
 .vscode
 
 # ignore model
-.model/*.pth
+result/*.pth
+*.pth

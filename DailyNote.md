@@ -2,7 +2,22 @@
 
 Some notes, summary or ideas on the process of learning with unfixed format in every week.
 
-## Week10 (19.05.11)
+## Week12 (19.05.15)
+
+Done:
+
+* try the focal loss. (non-ideal...)
+* try GCNet
+
+To Do:
+
+- hard negative mining for class imbalance.
+- SENet...
+- tensorboard.
+
+
+
+## Week11 (19.05.11)
 
 ### Improvement and discussion
 
