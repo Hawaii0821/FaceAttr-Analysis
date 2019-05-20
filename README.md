@@ -13,8 +13,9 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 - [x] v1:resnet101 + self-defined fc + BCE loss with logits + average accuracy
 - [x] v2:resnet101 + self-defined fc + BCE loss with logits + threshold rescaling (`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics (recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`)
-- [x] v3:GC_resnet101
-- [ ] Other: SENet ....
+- [x] v3+v5: try GC_resnet101 after modifying label format and loss. They can be finetuned to be better.
+- [x] v4: resnet101 + focal loss. (Not ideal but got highest F1)
+- [ ] reproduce paper ??  or paper
 
 ## Experiment Result
 
@@ -25,6 +26,8 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 | Resnet101-v1  |  91.14 |--- | ---| ---|
 | Resnet101-v2 | 90.07 | 0.67 | 0.18 | 0.28 |
 | GC_resnet101-v3 | 89.06| 0.68|0.17 | 0.27 |
+| Resnet101-v4 | 84.35| 0.64| 0.18| 0.29 |
+| GC_resnet101-v5 | 89.93| 0.85 |0.16  |0.28|
 
 More detailed data can be seen in folder [\model](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/model/).
 

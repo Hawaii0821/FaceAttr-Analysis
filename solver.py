@@ -53,17 +53,19 @@ class Solver(object):
 
     def build_model(self, model_type, pretrained):
         """Here should change the model's structure""" 
-        self.model = FaceAttrModel(model_type, pretrained, self.selected_attrs).to(self.device)
+        self.model = FaceAttrModel(model_type, pretrained, self.selected_attrs).to(self.device).to(self.device)
 
 
     def create_optim(self, optim_type):
+        scheduler = None
         if optim_type == "Adam":
-            self.optim = optim.Adam(self.model.parameters(), lr = self.learning_rate)
-            self.scheduler = optim.lr_scheduler.MultiStepLR(self.optim, [30,80], gamma=0.1)
-
+            self.optim_ = optim.Adam(self.model.parameters(), lr = self.learning_rate)
+            self.scheduler = optim.lr_scheduler.MultiStepLR(self.optim_, [30,80], gamma=0.1)
         elif optim_type == "SGD":
-            self.optim = optim.SGD(self.model.parameters(), lr = self.learning_rate, momentum = self.momentum)
-            self.scheduler = optim.lr_scheduler.MultiStepLR(self.optim, [30,80], gamma=0.1)
+            self.optim_ = optim.SGD(self.model.parameters(), lr = self.learning_rate, momentum = self.momentum)
+            self.scheduler = optim.lr_scheduler.MultiStepLR(self.optim_, [30,80], gamma=0.1)
+        else:
+             raise ValueError("no such a "+ optim_type + "optim, you can try Adam or SGD.")
 
     def set_transform(self, mode):
         transform = []
@@ -89,6 +91,7 @@ class Solver(object):
 
     def focal_loss(self, inputs, targets):
         focal_loss_func = FocalLoss()
+        focal_loss_func.to(self.device)
         return focal_loss_func(inputs, targets)
 
     def load_model_dict(self, model_state_dict_path):
@@ -106,6 +109,7 @@ class Solver(object):
         Return: the average trainging loss value of this epoch
         """
         self.model.train()
+	# self.scheduler.step()
         self.set_transform("train")
 
         # to avoid loading dataset repeatedly
@@ -118,14 +122,11 @@ class Solver(object):
         temp_loss = 0.0
             
         for batch_idx, samples in enumerate(self.train_loader):
-            images, labels = samples["image"], samples["label"]
-
+            images, labels = samples
+            labels = torch.stack(labels).t() 
             images= images.to(self.device)
-            
             outputs = self.model(images)
-
-            self.optim.zero_grad()
-            
+            self.optim_.zero_grad()
             if self.loss_type == "BCE_loss":
                 total_loss = self.BCE_loss(outputs, labels)  
 
@@ -133,9 +134,7 @@ class Solver(object):
                 total_loss = self.focal_loss(outputs, labels)
 
             total_loss.backward()
-            
-            self.optim.step()
-            
+            self.optim_.step()
             temp_loss += total_loss.item()
             
             if batch_idx % 50 == 0:
@@ -153,18 +152,22 @@ class Solver(object):
         self.model.eval()
         self.set_transform(mode)
         data_loader = None
+       
         if self.validate_loader == None and mode == "validate":
             self.validate_loader = get_loader(image_dir = self.image_dir, 
                                     attr_path = self.attr_path, 
                                     selected_attrs = self.selected_attrs,
                                     mode=mode, batch_size=self.batch_size, transform=self.transform)
-            data_loader = self.validate_loader
         elif self.test_loader == None and mode == "test":
             self.test_loader = get_loader(image_dir = self.image_dir, 
                                     attr_path = self.attr_path, 
                                     selected_attrs = self.selected_attrs,
                                     mode=mode, batch_size=self.batch_size, transform=self.transform)
+        if mode == 'validate':
+            data_loader = self.validate_loader
+        elif mode == 'test':
             data_loader = self.test_loader
+
         print("{}_dataset size: {}".format(mode,len(data_loader.dataset)))
         
         correct_dict = {}
@@ -191,9 +194,9 @@ class Solver(object):
                         'label': [batch_size, num_attr]
                     }
                 """
-                images, labels = samples["image"], samples["label"]
+                images, labels = samples
                 images = images.to(self.device)
-                labels = labels.tolist()
+                labels = torch.stack(labels).t().tolist()
                 outputs = self.model(images)
                
                 for i in range(self.batch_size):
@@ -241,7 +244,7 @@ class Solver(object):
       
         best_model_wts = copy.deepcopy(self.model.state_dict())
         best_acc = 0.0
-        
+        self.scheduler.step()
         eval_acc_dict = {}
         confusion_matrix_df = None 
 
@@ -250,10 +253,10 @@ class Solver(object):
         self.start_time = time.time()
         for epoch in range(self.epoches):
             running_loss = self.train(epoch)
-            print("{}/{} Epoch:  in training process，average loss: {:.4f}".format(epoch + 1, self.epoches, running_loss))
+            print("{}/{} Epoch:  in training process average loss: {:.4f}".format(epoch + 1, self.epoches, running_loss))
             print("The running time since the start is : {} ".format(utils.timeSince(self.start_time)))
             average_acc_dict, confusion_matrix_dict = self.evaluate("validate")
-            print("{}/{} Epoch: in evaluating process，average accuracy:{}".format(epoch + 1, self.epoches, average_acc_dict))
+            print("{}/{} Epoch: in evaluating process average accuracy:{}".format(epoch + 1, self.epoches, average_acc_dict))
             print("The running time since the start is : {} ".format(utils.timeSince(self.start_time)))
             train_losses.append(running_loss)
             average_acc = 0.0

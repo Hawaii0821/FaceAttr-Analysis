@@ -16,9 +16,10 @@ class FocalLoss(nn.Module):
         focal_weight = torch.where(torch.eq(gpu_targets, 1), 1. - inputs, inputs)
         focal_weight = alpha_factor * torch.pow(focal_weight, cfg.focal_loss_gamma)
         targets = targets.type(torch.FloatTensor)
-        inputs = inputs.detach().cpu()
+        inputs = inputs.cuda()
         bce = -(targets * torch.log(inputs) + (1. - targets) * torch.log(1. - inputs))
         bce = bce.cuda()
+        focal_weight = focal_weight.cuda()
         cls_loss = focal_weight * bce
         return cls_loss.mean()
 

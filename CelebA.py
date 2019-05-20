@@ -9,18 +9,6 @@ import config as cfg
 import pdb
 from torchvision import datasets, transforms, models
 
-# train [1,162770]    validate [162771,182637]  test[182638,202599]
-# train_end_index = 162770 + 1
-# validate_end_index = 182637 + 1
-# test_end_index = 202599 + 1 # make no sense temporialy.
-
-
-# for test
-"""
-train_end_index = 128 + 1
-validate_end_index = 256 + 1
-test_end_index = 128 + 1
-"""
 
 class CelebA(data.Dataset):
     
@@ -64,7 +52,7 @@ class CelebA(data.Dataset):
         image = Image.open(os.path.join(self.image_folder, filename)) 
         if self.transform != None:
             image = self.transform(image)
-        return {"image": image, "label": label}
+        return image, label
 
     def preprocess(self):
         lines = [line.rstrip() for line in open(self.attr_file, 'r')]
@@ -197,8 +185,7 @@ def get_loader(image_dir, attr_path, selected_attrs,
                                   batch_size=batch_size,
                                   shuffle=(mode=='train'),
                                   num_workers=num_workers,
-                                  drop_last = True,
-                                  collate_fn=collate_fn) # drop_last：告诉如何处理数据集长度除于batch_size余下的数据。True就抛弃，否则保留
+                                  drop_last = True) # drop_last：告诉如何处理数据集长度除于batch_size余下的数据。True就抛弃，否则保留
     return data_loader
 
     """
@@ -217,12 +204,13 @@ def test():
                                  std=[0.229, 0.224, 0.225]))
     transform = transforms.Compose(transform)
     data_loader = get_loader(cfg.image_dir, cfg.attr_path, cfg.selected_attrs, 2, transform=transform)
-    for data in data_loader:
-        print(data)
-        image = data["image"]
-        label = data['label']
-        print(image.size())
-        print(len(label))
-        exit()
 
-# test() √
+    for idx, data in enumerate(data_loader):
+        image, label = data
+        print(image)
+        label = torch.stack(label).t()
+        print(image.size())
+        print(label.size())
+        exit()
+if __name__ == "__main__":
+    test()

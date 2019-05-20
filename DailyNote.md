@@ -14,7 +14,8 @@ To Do:
 - hard negative mining for class imbalance.
 - SENet...
 - tensorboard.
-
+- image search with attribute.
+- FAN rebuilt.
 
 
 ## Week11 (19.05.11)

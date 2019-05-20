@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 from torchvision.models import ResNet
-from GC_module import *
+from Module.GC_module import *
 
 
 def conv3x3(in_planes, out_planes, stride=1):
