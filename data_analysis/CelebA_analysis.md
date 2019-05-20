@@ -62,37 +62,37 @@
 3. Attractive：吸引人的
 4. Bags_Under_Eyes：眼袋
 5. Bald：秃头  ---
-6. Bangs：刘海
+6. Bangs：刘海 ---
 7. Big_Lips：大嘴唇
 8. Big_Nose：大鼻子 ----
 9. Black_Hair：黑发
-10. Blond_Hair：金发
+10. Blond_Hair：金发 ---
 11. Blurry：模糊的
 12. Brown_Hair：棕发
 13. Bushy_Eyebrows：浓眉
 14. Chubby：圆胖的
 15. Double_Chin：双下巴
-16. Eyeglasses：眼镜
-17. Goatee：山羊胡子
-18. Gray_Hair：灰发或白发
-19. Heavy_Makeup：浓妆
+16. Eyeglasses：眼镜 ----
+17. Goatee：山羊胡子 -----
+18. Gray_Hair：灰发或白发 ----
+19. Heavy_Makeup：浓妆 ----
 20. High_Cheekbones：高颧骨
-21. Male：男性
+21. Male：男性---
 22. Mouth_Slightly_Open：微微张开嘴巴
 23. Mustache：胡子，髭
 24. Narrow_Eyes：细长的眼睛
-25. No_Beard：无胡子
+25. No_Beard：无胡子 -----
 26. Oval_Face：椭圆形的脸
 27. Pale_Skin：苍白的皮肤 -----
 28. Pointy_Nose：尖鼻子
 29. Receding_Hairline：发际线后移 -----
 30. Rosy_Cheeks：红润的双颊
-31. Sideburns：连鬓胡子
+31. Sideburns：连鬓胡子----
 32. Smiling：微笑
 33. Straight_Hair：直发
 34. Wavy_Hair：卷发
 35. Wearing_Earrings：戴着耳环
-36. Wearing_Hat：戴着帽子
+36. Wearing_Hat：戴着帽子-----
 37. Wearing_Lipstick：涂了唇膏
 38. Wearing_Necklace：戴着项链
 39. Wearing_Necktie：戴着领带

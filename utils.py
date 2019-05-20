@@ -2,20 +2,10 @@ import time
 import matplotlib.pyplot as plt
 import math 
 import numpy as np
-import random 
+from numpy import random
 import os
 import torch
-
-"""
-class Logger(object):
-    def __init__(self, log_dir):
-        self.writer = tf.summary.FileWriter(log_dir)
-
-    def scalar_summary(self, tag, value, step):
-        summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
-        self.writer.add_summary(summary, step)
-"""
-
+import cv2 
 def timeSince(since):
     """
     compute the training/evaluate time
@@ -50,4 +40,3 @@ def seed_everything(seed=1234):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
-

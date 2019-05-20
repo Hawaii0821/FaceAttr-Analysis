@@ -16,7 +16,7 @@ parser.add_argument('--momentum', default=0.9, type=float, help='momentum')
 parser.add_argument('--optim_type', choices=['SGD','Adam'], default='SGD')
 parser.add_argument('--pretrained', action='store_true', default=True)
 parser.add_argument("--loss_type", choices=['BCE_loss', 'focal_loss'], default='BCE_loss')
-parser.add_argument("--exp_version", default="v4")
+parser.add_argument("--exp_version", default="v7")
 args = parser.parse_args()
 
 epoches = args.epoches
@@ -38,9 +38,11 @@ if __name__ == "__main__":
                     optim_type=optim_type, momentum=momentum, pretrained=pretrained, loss_type=loss_type, 
                     exp_version=exp_version)
     try:
-        solver.fit()
+        solver.fit(model_path='./result/v5-gc_resnet101-best_model_params.pth')
+        solver.test_speed(256)
+        
     except KeyboardInterrupt:
         print("early stop...")
         print("save the model dict....")
-        solver.save_model_dict("./results/early_stop_model.pth")
+        solver.save_model_dict("./result/early_stop_model.pth")
         print("Saved!")

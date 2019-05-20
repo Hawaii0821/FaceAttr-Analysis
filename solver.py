@@ -21,6 +21,8 @@ from FaceAttr_baseline_model import FaceAttrModel
 from Module.focal_loss import FocalLoss
 import config as cfg
 
+from Module.data_augmentation import *
+
 class Solver(object):
     
     def __init__(self, epoches, batch_size, learning_rate, model_type, optim_type, momentum, pretrained, loss_type, exp_version):
@@ -71,12 +73,18 @@ class Solver(object):
         transform = []
         if mode == 'train':
             transform.append(transforms.RandomHorizontalFlip())
+            transform.append(transforms.RandomRotation(degrees=30))  # 旋转30度
+            transform.append(RandomBrightness())
+            transform.append(RandomContrast())
+            transform.append(RandomHue())
+            transform.append(RandomSaturation())
         # the advising transforms way in imagenet
         # the input image should be resized as 224 * 224 for resnet.
-        transform.append(transforms.Resize(size=(224, 224)))
+        # transform.append(transforms.Resize(size=(224, 224))) test no resize operation.
         transform.append(transforms.ToTensor())
         transform.append(transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225]))
+        
         transform = transforms.Compose(transform)
         self.transform = transform
 
@@ -217,7 +225,7 @@ class Solver(object):
                         if pred == 0 and labels[i][j] == 0:
                             confusion_matrix_dict['FN'][j] += 1
                 if batch_idx % 50 == 0:
-                    print("[Test//Evaluate]: Batch_idx : {}/{}, time: {}".format( 
+                    print("[{}]: Batch_idx : {}/{}, time: {}".format(mode, 
                                 batch_idx, int(len(data_loader.dataset)/self.batch_size), 
                                 utils.timeSince(self.start_time)))
             i = 0
@@ -234,12 +242,27 @@ class Solver(object):
                                                     + confusion_matrix_dict['TN'][i] + 1e-6)
                 confusion_matrix_dict['F1'][i] = 2*confusion_matrix_dict['precision'][i]*confusion_matrix_dict['recall'][i]/(confusion_matrix_dict['precision'][i] + confusion_matrix_dict['recall'][i] + 1e-6)                                                                          
                 i += 1
-        return correct_dict, confusion_matrix_dict
+            
+            mean_attributes_acc = 0.0
+            for k, v in correct_dict.items():
+                mean_attributes_acc += v
+            mean_attributes_acc /= len(self.selected_attrs)
 
-    def fit(self):
+        return correct_dict, confusion_matrix_dict, mean_attributes_acc
+
+
+    def fit(self, model_path):
         """
         This function is to combine the train and evaluate, finally getting a best model.
         """
+        print("-------------------------------")
+        print("You method is {}-{}-{}_epoches".format(self.exp_version, self.model_type, self.epoches))
+        print("-------------------------------")
+
+        if model_path is not None:
+            self.load_model_dict(model_path)
+            print("The model has load the state dict on {}".format(model_path))
+
         train_losses = []
       
         best_model_wts = copy.deepcopy(self.model.state_dict())
@@ -255,8 +278,9 @@ class Solver(object):
             running_loss = self.train(epoch)
             print("{}/{} Epoch:  in training process average loss: {:.4f}".format(epoch + 1, self.epoches, running_loss))
             print("The running time since the start is : {} ".format(utils.timeSince(self.start_time)))
-            average_acc_dict, confusion_matrix_dict = self.evaluate("validate")
+            average_acc_dict, confusion_matrix_dict, mean_attributes_acc = self.evaluate("validate")
             print("{}/{} Epoch: in evaluating process average accuracy:{}".format(epoch + 1, self.epoches, average_acc_dict))
+            print("{}/{} Epoch: the mean accuracy is {}".format(mean_attributes_acc))
             print("The running time since the start is : {} ".format(utils.timeSince(self.start_time)))
             train_losses.append(running_loss)
             average_acc = 0.0
@@ -311,3 +335,24 @@ class Solver(object):
                 if pred != 0:
                     pred_dict[attr] = pred
             return pred_dict  # return the predicted positive attributes dict and the probability.
+
+
+    def test_speed(self, image_num=256):
+        self.model.eavl()
+        with torch.no_grad():
+            self.test_loader = get_loader(image_dir = self.image_dir, 
+                                    attr_path = self.attr_path, 
+                                    selected_attrs = self.selected_attrs,
+                                    mode="test", batch_size=image_num, transform=self.transform)
+            
+            for idx, samples in enumerate(self.test_loader):
+                start_time = time.time()
+                images, labels = samples
+                images = images.to(self.device)
+                labels = torch.stack(labels).t().tolist()
+                outputs = self.model(images)
+                end_time = time.time()
+
+                if idx == 0:
+                    images_per_sec = image_num / (end_time - start_time)
+                    print("You test {} images. The speed is {} images / second.".format(image_num, images_per_sec))

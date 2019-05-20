@@ -2,20 +2,27 @@
 
 Some notes, summary or ideas on the process of learning with unfixed format in every week.
 
+## Week13 (19.05.20)
+
+* more data agumentation methods.
+* test speed function.
+* finetune existing models(gc_resnet101, resnet101)
+* read papers related to face attribute analysis.
+
 ## Week12 (19.05.15)
 
 Done:
 
 * try the focal loss. (non-ideal...)
 * try GCNet
+* fix bugs
 
 To Do:
 
 - hard negative mining for class imbalance.
 - SENet...
 - tensorboard.
-- image search with attribute.
-- FAN rebuilt.
+
 
 
 ## Week11 (19.05.11)

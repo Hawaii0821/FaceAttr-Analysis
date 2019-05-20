@@ -2,7 +2,8 @@ from __future__ import print_function, division
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
-from Module.GC_resnet import * 
+from Module.GC_resnet import *
+from Module.SE_resnet import * 
 
 """
 Adopt the pretrained resnet model to extract feature of the feature
@@ -19,14 +20,15 @@ class FeatureExtraction(nn.Module):
             self.model = models.resnet101(pretrained=pretrained)
         elif model_type == "Resnet152":
             self.model = models.resnet152(pretrained=pretrained)
-        elif model_type == "GCNet":
+        elif model_type == "gc_resnet101":
             self.model = gc_resnet101(2)
+        elif model_type == 'se_resnet101':
+            self.model = se_resnet101(2)  # the param 2 makes no sense. because we will cut the final fc layers.
+        print("Has loaded the model {}".format(model_type))
         self.model = nn.Sequential(*list(self.model.children())[:-1])
 
-    def forward(self, image_batch):
-        return self.model(image_batch)
-
-
+    def forward(self, image):
+        return self.model(image)
 
 """
 judge the attributes from the result of feature extraction
@@ -53,26 +55,11 @@ class FeatureClassfier(nn.Module):
 
         self.sigmoid = nn.Sigmoid()
 
-        """
-        for attr in selected_attrs:
-            self.fc_set[attr] = fc 
-            #self.fc_set[attr].to(device)
-        """
 
     def forward(self, x):
         #result_set = []
         x = x.view(x.size(0), -1)  # flatten
-        """
-        for attr in self.selected_attrs:
-            print(self.fc_set[attr])
-            res = self.fc_set[attr](x)
-            result_set.append(res)
-        """
         res = self.fc(x)
-        """
-        for i in range(len(self.selected_attrs)):
-            res[i] = self.sigmoid(res[i])
-        """
         res = self.sigmoid(res)
         return res
 
