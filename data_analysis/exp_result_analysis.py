@@ -51,20 +51,20 @@ def show_loss(loss_df, save_file_name):
 
 
 if __name__ == "__main__":
-    acc_csv = '../result/v5-gc_resnet101-eval_accuracy.csv'
+    acc_csv = '../result/v6-gc_resnet101-eval_accuracy.csv'
     acc_df = pd.read_csv(acc_csv)
     show_eval_accuracy(acc_df.T, acc_csv.replace('.csv', '.png'))
     print(acc_df.describe())
    
-    test_acc_csv = '../result/v5-gc_resnet101-test_accuracy.csv'
+    test_acc_csv = '../result/v6-gc_resnet101-test_accuracy.csv'
     acc_df = pd.read_csv(test_acc_csv)
     aver_acc = show_test_accuracy(acc_df, test_acc_csv.replace('.csv', '.png'))
 
-    loss_csv = '../result/v5-gc_resnet101-losses.csv'
+    loss_csv = '../result/v6-gc_resnet101-losses.csv'
     loss_df = pd.read_csv(loss_csv)
     show_loss(loss_df, loss_csv.replace('.csv', '.png'))
 
-    matrix = '../result/v5-gc_resnet101-confusion_matrix.csv'
+    matrix = '../result/v6-gc_resnet101-confusion_matrix.csv'
     matrix_df = pd.read_csv(matrix)
     print(matrix_df)
     print("Average accuracy: {} ".format(aver_acc))

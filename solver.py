@@ -217,13 +217,13 @@ class Solver(object):
                             correct_dict[attr] = correct_dict[attr] + 1
 
                         if pred == 1 and labels[i][j] == 1:
-                            confusion_matrix_dict['TP'][j] += 1
+                            confusion_matrix_dict['TP'][j] += 1  # TP
                         if pred == 1 and labels[i][j] == 0:
-                            confusion_matrix_dict['FP'][j] += 1
+                            confusion_matrix_dict['FP'][j] += 1  # FP
                         if pred == 0 and labels[i][j] == 1:
-                            confusion_matrix_dict['TN'][j] += 1
+                            confusion_matrix_dict['FN'][j] += 1  # TN  
                         if pred == 0 and labels[i][j] == 0:
-                            confusion_matrix_dict['FN'][j] += 1
+                            confusion_matrix_dict['TN'][j] += 1  # FN
                 if batch_idx % 50 == 0:
                     print("[{}]: Batch_idx : {}/{}, time: {}".format(mode, 
                                 batch_idx, int(len(data_loader.dataset)/self.batch_size), 
@@ -318,6 +318,8 @@ class Solver(object):
         test_acc_csv.to_csv("./result/" + self.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
         test_confusion_matrix_csv = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
         test_confusion_matrix_csv.to_csv("./result/" + self.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
+
+        
 
     def predict(self, image):
         if not self.LOADED:
