@@ -14,7 +14,8 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 - [x] v1:resnet101 + self-defined fc + BCE loss with logits + average accuracy
 - [x] v2:resnet101 + self-defined fc + BCE loss with logits + threshold rescaling (`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics (recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`)
 - [x] v3+v5: try GC_resnet101 after modifying label format and loss. They can be finetuned to be better.
-- [x] v4: resnet101 + focal loss. (Not ideal but got highest F1)
+- [x] v4: resnet101 + focal loss.
+- [x] v6: try SENet
 
 ## Experiment Result
 
@@ -22,8 +23,8 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 | plan | avearage accuracy(%)| macro-precision(%) | macro-recall(%) | macro-F1(%) | speed(pictures/s)| comment |
 | ---- | -----| ---- | ----- | ----- | --- |  ---- |
-| Resnet101-v1  |  91.14 |--- | ---| ---| ---| test on eval&test dataset|
-| Resnet101-v2 | 90.07 | 67.46 | 68.18 | 67.35 | ---| test on eval& test dataset|
+| Resnet101-v1  |  91.14 |--- | ---| ---| ---| test on eval&test dataset--deprecated|
+| Resnet101-v2 | 90.07 | 67.46 | 68.18 | 67.35 | ---| test on eval& test dataset--deprecated.|
 | GC_resnet101-v3 | 89.06| 55.06| 64.19 | 58.47 |---|test on test dataset |
 | Resnet101-v4 | 84.35| 59.97| 40.39| 53.06 |---|test on test dataset|  
 | GC_resnet101-v5 | 89.93| 77.18 |47.67 |57.40|---|test on test dataset|
