@@ -74,13 +74,13 @@ class Solver(object):
         if mode == 'train':
             transform.append(transforms.RandomHorizontalFlip())
             transform.append(transforms.RandomRotation(degrees=30))  # 旋转30度
-            transform.append(RandomBrightness())
-            transform.append(RandomContrast())
-            transform.append(RandomHue())
-            transform.append(RandomSaturation())
+            # transform.append(RandomBrightness())
+            # transform.append(RandomContrast())
+            # transform.append(RandomHue())
+            # transform.append(RandomSaturation())
         # the advising transforms way in imagenet
         # the input image should be resized as 224 * 224 for resnet.
-        # transform.append(transforms.Resize(size=(224, 224))) test no resize operation.
+        transform.append(transforms.Resize(size=(224, 224))) # test no resize operation.
         transform.append(transforms.ToTensor())
         transform.append(transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225]))
@@ -103,7 +103,6 @@ class Solver(object):
         return focal_loss_func(inputs, targets)
 
     def load_model_dict(self, model_state_dict_path):
-        self.model = None
         self.model_save_path = model_state_dict_path
         self.model.load_state_dict(torch.load(model_state_dict_path))
         print("The model has loaded !")
@@ -280,7 +279,7 @@ class Solver(object):
             print("The running time since the start is : {} ".format(utils.timeSince(self.start_time)))
             average_acc_dict, confusion_matrix_dict, mean_attributes_acc = self.evaluate("validate")
             print("{}/{} Epoch: in evaluating process average accuracy:{}".format(epoch + 1, self.epoches, average_acc_dict))
-            print("{}/{} Epoch: the mean accuracy is {}".format(mean_attributes_acc))
+            print("{}/{} Epoch: the mean accuracy is {}".format(epoch+1, self.epoches, mean_attributes_acc))
             print("The running time since the start is : {} ".format(utils.timeSince(self.start_time)))
             train_losses.append(running_loss)
             average_acc = 0.0
@@ -297,7 +296,6 @@ class Solver(object):
                 best_model_wts = copy.deepcopy(self.model.state_dict())
                 confusion_matrix_df = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
 
-
         # save the accuracy in files
         eval_acc_csv = pd.DataFrame(eval_acc_dict, index = [i for i in range(self.epoches)]).T 
         eval_acc_csv.to_csv("./result/" + self.exp_version + '-' +  self.model_type + "-eval_accuracy"+ ".csv");
@@ -313,7 +311,7 @@ class Solver(object):
         torch.save(best_model_wts, self.model_save_path)
 
         # test the model with test dataset.
-        test_acc_dict, confusion_matrix_dict = self.evaluate("test")
+        test_acc_dict, confusion_matrix_dict, mean_attributes_acc = self.evaluate("test")
         test_acc_csv = pd.DataFrame(test_acc_dict, index=['accuracy'])
         test_acc_csv.to_csv("./result/" + self.exp_version + '-' + self.model_type + "-test_accuracy" + '.csv')
         test_confusion_matrix_csv = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
@@ -340,7 +338,7 @@ class Solver(object):
 
 
     def test_speed(self, image_num=256):
-        self.model.eavl()
+        self.model.evall()
         with torch.no_grad():
             self.test_loader = get_loader(image_dir = self.image_dir, 
                                     attr_path = self.attr_path, 

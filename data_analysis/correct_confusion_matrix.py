@@ -5,7 +5,7 @@ v3 - v6版本的度量指标 FN 错当成 TN，TN错当成FN，再交换csv属�
 """
 
 if __name__ == "__main__":
-    matrix = '../result/v6-se_resnet101-confusion_matrix.csv'
+    matrix = '../result/v5.1-gc_resnet101-confusion_matrix.csv'
     matrix_df = pd.read_csv(matrix)
     print(matrix_df)
     matrix_df['precision'] = matrix_df['TP'] / (matrix_df['TP'] + matrix_df['FP'])

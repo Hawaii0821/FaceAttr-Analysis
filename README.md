@@ -29,6 +29,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 | Resnet101-v4 | 84.35| 59.97| 40.39| 53.06 |---|test on test dataset|  
 | GC_resnet101-v5 | 89.93| 77.18 |47.67 |57.40|---|test on test dataset|
 | SE_resnet101-v6 | 90.06 | 77.35 | 49.67 | 59.42 |---  | test on test dataset|
+| Resnet152-v7 | 88.72 | 74.64 | 43.81 | 54.78 | --- |
 
 More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/result/).
 
@@ -53,7 +54,7 @@ Priority:
 Choice:
 
 - [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
-- [ ] Parse the input script command.
+- [x] Parse the input script command.
 - [ ] video stream monitor[(picamera on Raspberry Pi)](https://github.com/waveform80/picamera) and transfer video frames.
 - [ ] upload image in html and return the analysis result.
 - [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis.
