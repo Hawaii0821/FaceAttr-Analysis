@@ -2,26 +2,28 @@
 
 Some notes, summary or ideas on the process of learning with unfixed format in every week.
 
-## Week13 
+## Week13
 
-(19.05.20)
+(19.05.20~05.26)
 
 * more data agumentation methods.
 * test speed function.
 * finetune existing models(gc_resnet101, resnet101)
 * read papers related to face attribute analysis.
+* finetune the existing models.
+* rebuild  the state of the art methods FAN network.
 
-* LFWA dataset...
+## Week12
 
-## Week12 (19.05.15)
-
-Done:
+ (19.05.15)
 
 * try the focal loss. (non-ideal...)
 * try GCNet
 * fix bugs
 
-## Week11 (19.05.11)
+## Week11
+
+(19.05.11)
 
 ### Improvement and discussion
 
@@ -32,7 +34,9 @@ Done:
 - find a tradeoff between speed and accuracy.
 - multi-task: face localization and analysis.
 
-## Week9 (19.04.27 ~ 04.29)
+## Week9
+
+(19.04.27 ~ 04.29)
 
 ### Experiment summary
 
@@ -82,13 +86,17 @@ The attributes whose accuracy is above 0.98 are:
 - Facial Attributes: Accuracy and Adversarial Robustness. （Transfomer)
 - Multi-task: face detection and face analysis.
 
-## Week7 (19.04.08)
+## Week7 
+
+(19.04.08)
 
 - [x] Open camera and capture video frame by opencv3.
 - [x] Upload the picture on front end and receive it at backend. (Flask)
 - [x] Use haarcascades detector on opencv to detect face. （Fast but not accurate.)
 
-## Week6 (19.04.01)
+## Week6 
+
+(19.04.01)
 
 ### Some goals
 
@@ -102,7 +110,9 @@ The attributes whose accuracy is above 0.98 are:
 
 - the trainning samples content is quite different from the detected face images.
 
-## Week5 (19.03.30 ~ 19.03.31)
+## Week5 
+
+(19.03.30 ~ 19.03.31)
 
 ### Difficulty & Solution
 
@@ -113,7 +123,9 @@ The attributes whose accuracy is above 0.98 are:
   - samples imbalance: undersampling; oversampling; threshold-moving/rescaling.
   - Feature is not obvious and hard to detect, such as the attribute 'attractive'. Semantic segmentation ?
 
-## Week4 (19.03.23 ~ 19.03.24)
+## Week4 
+
+(19.03.23 ~ 19.03.24)
 
 ### Paper Note
 
@@ -140,7 +152,9 @@ The attributes whose accuracy is above 0.98 are:
 1. Improving Facial Attribute Prediction using Semantic Segmentation. [Arxiv](https://arxiv.org/abs/1704.08740)
 2. Harnessing Synthesized Abstraction Images to Improve Facial Attribute Recognition. [IJCAI](https://www.ijcai.org/proceedings/2018/102)
 
-## Week3 (19.03.16)
+## Week3 
+
+(19.03.16)
 
 - A simple analysis note in `CelebA_analysis.md`
 - A simple visualzation of every attributes' sample numbers in `analysis_attr.py`.

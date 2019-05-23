@@ -42,32 +42,30 @@ More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/
 
 Priority:
 
-- [ ] Try more famous models, such as ResNet101, DenseNet, ResNeXt, SENet.(in processing)
+- [ ] Try more famous models, such as ~~ResNet101~~, DenseNet, ResNeXt, ~~SENet~~, ~~GCNet~~.(in processing)
 - [ ] Customize the network structure for better performance.
-- [ ] Open camera of laptop and real-time analyis. （in processing)
-- [ ] Search for the appropriate prediction threshold for every attribute or find a good place to teach themselves.
-- [ ] More detailed analysis about the experiment results.(in processing)
-- [ ] Train on wild images instead of precroped images to get a higher performance in practice.
-- [ ] Face localization,alignment and analysis.(challenging)
-- [ ] Train a model on different datasets by processing labels.
+- [ ] Open camera of laptop and real-time analyis.
+- [ ] Train a model on different datasets for more attributes.
+- [ ] upload image in html and return the analysis result.
+- [ ] search face attributes and return the related images.
+- [ ] open pc camera, detect face and return the predicted result.
 
 Choice:
 
 - [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
-- [x] Parse the input script command.
-- [ ] video stream monitor[(picamera on Raspberry Pi)](https://github.com/waveform80/picamera) and transfer video frames.
-- [ ] upload image in html and return the analysis result.
-- [ ] Back end: [face detection](https://github.com/ageitgey/face_recognition) and real-time analysis.
-- [ ] Create adversarial samples for robustness.
+- [ ] Train on wild images instead of precroped images to get a higher performance in practice.
+- [ ] Face localization, alignment and analysis. (challenging)
 
-Done
+Done:
 
 - [x] [Dataset attribute analysis](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/analysis_attr.py).
 - [x] [Data process and load](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/CelebA.py).
 - [x] [Built baseline model(Resnet18 and 101)](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/FaceAttr_baseline_model.py).
 - [x] [Train and evaluate](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/solver.py).
 - [x] Save and load model.
-
+- [x] More detailed analysis about the experiment results.
+- [x] Parse the input script command.
+- [ ] 
 More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/DailyNote.md)
 
 ## Problems
