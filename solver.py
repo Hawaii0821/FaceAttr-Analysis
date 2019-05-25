@@ -250,7 +250,7 @@ class Solver(object):
         return correct_dict, confusion_matrix_dict, mean_attributes_acc
 
 
-    def fit(self, model_path):
+    def fit(self, model_path=""):
         """
         This function is to combine the train and evaluate, finally getting a best model.
         """
@@ -258,7 +258,7 @@ class Solver(object):
         print("You method is {}-{}-{}_epoches".format(self.exp_version, self.model_type, self.epoches))
         print("-------------------------------")
 
-        if model_path is not None:
+        if model_path is not "":
             self.load_model_dict(model_path)
             print("The model has load the state dict on {}".format(model_path))
 

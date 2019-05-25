@@ -17,9 +17,8 @@ class FocalLoss(nn.Module):
         focal_weight = alpha_factor * torch.pow(focal_weight, cfg.focal_loss_gamma)
         targets = targets.type(torch.FloatTensor)
         inputs = inputs.cuda()
-        bce = -(targets * torch.log(inputs) + (1. - targets) * torch.log(1. - inputs))
-        bce = bce.cuda()
+        targets = targets.cuda()
+        bce = F.binary_cross_entropy(inputs, targets)
         focal_weight = focal_weight.cuda()
         cls_loss = focal_weight * bce
-        return cls_loss.mean()
-
+        return cls_loss.sum()

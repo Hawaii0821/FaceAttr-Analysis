@@ -45,21 +45,29 @@ def show_loss(loss_df, save_file_name):
 
 
 if __name__ == "__main__":
-    eval_acc_csv = '../result/v5.1-gc_resnet101-eval_accuracy.csv'
+    eval_acc_csv = '../result/v7-Resnet152-eval_accuracy.csv'
     eval_acc_df = pd.read_csv(eval_acc_csv)
-    print(eval_acc_df)
     show_eval_accuracy(eval_acc_df, eval_acc_csv.replace('.csv', '.png'))
     
     # print("ok!")
-    test_acc_csv = '../result/v5.1-gc_resnet101-test_accuracy.csv'
+    test_acc_csv = '../result/v7-Resnet152-test_accuracy.csv'
     acc_df = pd.read_csv(test_acc_csv)
     acc = show_test_accuracy(acc_df, test_acc_csv.replace('.csv', '.png'))
-    print("average accuracy: {}".format(acc))
     # aver_acc = show_test_accuracy(acc_df, test_acc_csv.replace('.csv', '.png'))
 
-    loss_csv = '../result/v5.1-gc_resnet101-losses.csv'
+    loss_csv = '../result/v7-Resnet152-losses.csv'
     loss_df = pd.read_csv(loss_csv)
     show_loss(loss_df, loss_csv.replace('.csv', '.png'))
+    
+    matrix = '../result/v7-Resnet152-confusion_matrix.csv'
+    matrix_df = pd.read_csv(matrix)
+
+    
+    matrix_df['precision'] = matrix_df['TP'] / (matrix_df['TP'] + matrix_df['FP'])
+    matrix_df['recall'] = matrix_df['TP'] / (matrix_df['TP'] + matrix_df['FN'])
+    matrix_df['F1'] = 2 * matrix_df['precision'] * matrix_df['recall'] / (matrix_df['precision'] + matrix_df['recall'])
+    print(matrix_df.describe())
+    print("average accuracy: {}".format(acc))
 
     # matrix = '../result/v7-Resnet152-confusion_matrix.csv'
     # matrix_df = pd.read_csv(matrix)

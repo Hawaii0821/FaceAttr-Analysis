@@ -20,13 +20,14 @@ class FeatureExtraction(nn.Module):
             self.model = models.resnet101(pretrained=pretrained)
         elif model_type == "Resnet152":
             self.model = models.resnet152(pretrained=pretrained)
+        elif model_type == "densenet121":
+            self.model = models.densenet121(pretrained=pretrained)
         elif model_type == "gc_resnet101":
             self.model = gc_resnet101(2)
         elif model_type == 'se_resnet101':
             self.model = se_resnet101(2)  # the param 2 makes no sense. because we will cut the final fc layers.
         print("Has loaded the model {}".format(model_type))
         self.model = nn.Sequential(*list(self.model.children())[:-1])
-
     def forward(self, image):
         return self.model(image)
 
