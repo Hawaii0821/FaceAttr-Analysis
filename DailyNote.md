@@ -8,10 +8,10 @@ Some notes, summary or ideas on the process of learning with unfixed format in e
 
 * more data agumentation methods.
 * test speed function.
-* finetune existing models(gc_resnet101, resnet101)
+* finetune existing models(gc_resnet101, resnet101, senet101)
 * read papers related to face attribute analysis.
-* finetune the existing models.
-* rebuild  the state of the art methods FAN network.
+* to rebuild the state of the art methods FAN network.
+
 
 ## Week12
 
@@ -19,6 +19,7 @@ Some notes, summary or ideas on the process of learning with unfixed format in e
 
 * try the focal loss. (non-ideal...)
 * try GCNet
+* try senet
 * fix bugs
 
 ## Week11

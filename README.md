@@ -16,6 +16,8 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 - [x] v3+v5: try GC_resnet101 after modifying label format and loss. They can be finetuned to be better.
 - [x] v4: resnet101 + focal loss.
 - [x] v6: try SENet
+- [x] v7: resnet152
+- [ ] v8: FAN(pix2pix/unet + dual-path network) from youtu search. Move to another [repo](https://github.com/JoshuaQYH/pytorch.FAN) to check.
 
 ## Experiment Result
 
