@@ -260,7 +260,7 @@ class Solver(object):
 
         if model_path is not "":
             self.load_model_dict(model_path)
-            print("The model has load the state dict on {}".format(model_path))
+            print("The model has loaded the state dict on {}".format(model_path))
 
         train_losses = []
       
@@ -308,8 +308,8 @@ class Solver(object):
         self.model_save_path = "./result/" + self.exp_version + '-' +  self.model_type + "-best_model_params" + ".pth"
         self.model.load_state_dict(best_model_wts)
         self.LOADED = True
-        torch.save(best_model_wts, self.model_save_path)
-
+        torch.save(best_model_wts, self.model_save_path)        
+        print("The model has saved in {}".format(self.model_save_path))
         # test the model with test dataset.
         test_acc_dict, confusion_matrix_dict, mean_attributes_acc = self.evaluate("test")
         test_acc_csv = pd.DataFrame(test_acc_dict, index=['accuracy'])
@@ -318,7 +318,6 @@ class Solver(object):
         test_confusion_matrix_csv.to_csv("./result/" + self.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
 
         
-
     def predict(self, image):
         if not self.LOADED:
             # load the best model dict.
@@ -338,7 +337,7 @@ class Solver(object):
 
 
     def test_speed(self, image_num=256):
-        self.model.evall()
+        self.model.eval()
         with torch.no_grad():
             self.test_loader = get_loader(image_dir = self.image_dir, 
                                     attr_path = self.attr_path, 

@@ -8,8 +8,8 @@ import argparse
 from utils import seed_everything
 
 parser = argparse.ArgumentParser(description='FaceAtrr')
-parser.add_argument('--model_type', choices=['Resnet34','Resnet50','Resnet101','Resnet152','gc_resnet101','se_resnet101', 
-'densenet121'], default='Resnet101')
+parser.add_argument('--model_type', choices=['Resnet101','Resnet152','gc_resnet101','se_resnet101', 
+'densenet121', 'sge_resnet101', 'sk_resnet101'], default='Resnet101')
 parser.add_argument('--batch_size', default=128, type=int, help='batch_size')
 parser.add_argument('--epoches', default=100, type=int, help='epoches')
 parser.add_argument('--learning_rate', default=1e-3, type=float, help='learning_rate')
@@ -47,3 +47,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("early stop...")
         print("save the model dict....")
+        solver.save_model_dict(exp_version+"_"+model_path + "_earlystop.pth")

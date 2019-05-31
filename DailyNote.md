@@ -2,6 +2,13 @@
 
 Some notes, summary or ideas on the process of learning with unfixed format in every week.
 
+## Week14
+
+(19.05.27~19.06.02)
+
+* train the best model on resnet152, gc_resnet101.
+* 
+
 ## Week13
 
 (19.05.20~05.26)

@@ -29,9 +29,9 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 | Resnet101-v2 | 90.07 | 67.46 | 68.18 | 67.35 | ---| test on eval& test dataset--deprecated.|
 | GC_resnet101-v3 | 89.06| 55.06| 64.19 | 58.47 |---|test on test dataset |
 | Resnet101-v4 | 84.35| 59.97| 40.39| 53.06 |---|test on test dataset|  
-| GC_resnet101-v5 | 89.93| 77.18 |47.67 |57.40|---|test on test dataset|
+| GC_resnet101-v5.2 | 91.94| 79.45 |65.64 |69.94|---|test on test dataset|
 | SE_resnet101-v6 | 90.06 | 77.35 | 49.67 | 59.42 |---  | test on test dataset|
-| Resnet152-v7 | 88.72 | 74.64 | 43.81 | 54.78 | --- |
+| Resnet152-v7.1 | 91.95 | 79.46 | 65.98 | 70.14 | --- |
 
 More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/result/).
 

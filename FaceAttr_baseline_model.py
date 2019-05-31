@@ -4,6 +4,8 @@ import torch.nn as nn
 from torchvision import transforms, models
 from Module.GC_resnet import *
 from Module.SE_resnet import * 
+from Module.resnet_sge import * 
+from Module.resnet_sk import * 
 
 """
 Adopt the pretrained resnet model to extract feature of the feature
@@ -12,11 +14,7 @@ class FeatureExtraction(nn.Module):
     def __init__(self, pretrained, model_type = "Resnet18"):
         super(FeatureExtraction, self).__init__()
         self.model = models.resnet18(pretrained=pretrained)   
-        if model_type == "Resnet34":
-            self.model = models.resnet34(pretrained=pretrained)
-        elif model_type == "Resnet50":
-            self.model = models.resnet50(pretrained=pretrained)
-        elif model_type == "Resnet101":
+        if model_type == "Resnet101":
             self.model = models.resnet101(pretrained=pretrained)
         elif model_type == "Resnet152":
             self.model = models.resnet152(pretrained=pretrained)
@@ -26,6 +24,10 @@ class FeatureExtraction(nn.Module):
             self.model = gc_resnet101(2)
         elif model_type == 'se_resnet101':
             self.model = se_resnet101(2)  # the param 2 makes no sense. because we will cut the final fc layers.
+        elif model_type == 'sge_resnet101':
+            self.model = sge_resnet101(pretrained=pretrained)
+        elif model_type == "sk_resnet101":
+            self.model = sk_resnet101(pretrained=pretrained)
         print("Has loaded the model {}".format(model_type))
         self.model = nn.Sequential(*list(self.model.children())[:-1])
     def forward(self, image):
