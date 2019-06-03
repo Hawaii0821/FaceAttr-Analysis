@@ -7,7 +7,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 ### Dataset
 
 - CelebA: about 162770 train images and  about 39829 test images. （with precropped images, but it's better to try wild images.）
-- LFWA: (todo...)  
+- LFWA: (todo...because the original dataset link is invalid...)  
 
 ### Methods
 
@@ -50,19 +50,17 @@ More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/
 
 Priority:
 
-- [ ] Try more famous models, such as ~~ResNet101~~, ~~DenseNet~~, ~~SKNet~~, ~~SGENet~~, ~~SENet~~, ~~GCNet~~.(in processing)
-- [ ] Customize the network structure for better performance.
-- [ ] Open camera of laptop and real-time analyis.
-- [ ] Train a model on different datasets for more attributes.
-- [ ] upload image in html and return the analysis result.
-- [ ] search face attributes and return the related images.
+- [x] Try more famous models, such as ~~ResNet101~~, ~~DenseNet~~, ~~SKNet~~, ~~SGENet~~, ~~SENet~~, ~~GCNet~~.(in processing)
+- [x] Customize the network structure for better performance.
+- [ ] upload images in html and return the analysis result.
 - [ ] open pc camera, detect face and return the predicted result.
+- [ ] search face attributes and return the related images.
 
 Choice:
 
 - [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
 - [ ] Train on wild images instead of precroped images to get a higher performance in practice.
-- [ ] Face localization, alignment and analysis. (challenging)
+- [ ] Multi-task learning: face localization, alignment and analysis. (challenging)
 
 Done:
 
@@ -74,6 +72,11 @@ Done:
 - [x] More detailed analysis about the experiment results.
 - [x] Parse the input script command.
 More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/DailyNote.md)
+
+## Usage
+
+Open the `run.sh` file, read the main.py and you can see the running arguments of model.
+> bash run.sh
 
 ## Problems
 
