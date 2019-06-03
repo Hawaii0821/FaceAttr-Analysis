@@ -7,17 +7,20 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 ### Dataset
 
 - CelebA: about 162770 train images and  about 39829 test images. （with precropped images, but it's better to try wild images.）
-- LFWA: todo....(Can we train a model on different datasets? Yeah)
+- LFWA: (todo...)  
 
 ### Methods
 
-- [x] v1:resnet101 + self-defined fc + BCE loss with logits + average accuracy
-- [x] v2:resnet101 + self-defined fc + BCE loss with logits + threshold rescaling (`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics (recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`)
-- [x] v3+v5: try GC_resnet101 after modifying label format and loss. They can be finetuned to be better.
+- [x] v1:resnet101 (self-defined fc + BCE loss with logits + average accuracy)
+- [x] v2:resnet101  (self-defined fc + BCE loss with logits + threshold rescaling (`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics (recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`))
+- [x] v3+v5: try GC_resnet101 after modifying label format and loss. 
 - [x] v4: resnet101 + focal loss.
-- [x] v6: try SENet
+- [x] v6: se_resnet101
 - [x] v7: resnet152
-- [ ] v8: FAN(pix2pix/unet + dual-path network) from youtu search. Move to another [repo](https://github.com/JoshuaQYH/pytorch.FAN) to check.
+- [x] v8: densenet121
+- [x] v9: [SGE_resnet101](https://arxiv.org/pdf/1905.09646.pdf).
+- [x] V10: [SK_resnet101](https://arxiv.org/pdf/1903.06586.pdf).
+- [ ] v11: FAN(pix2pix/unet + dual-path network) from youtu search. Move to another [repo](https://github.com/JoshuaQYH/pytorch.FAN) to check.
 
 ## Experiment Result
 
@@ -25,13 +28,16 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 | plan | avearage accuracy(%)| macro-precision(%) | macro-recall(%) | macro-F1(%) | speed(pictures/s)| comment |
 | ---- | -----| ---- | ----- | ----- | --- |  ---- |
-| Resnet101-v1  |  91.14 |--- | ---| ---| ---| test on eval&test dataset--deprecated|
-| Resnet101-v2 | 90.07 | 67.46 | 68.18 | 67.35 | ---| test on eval& test dataset--deprecated.|
-| GC_resnet101-v3 | 89.06| 55.06| 64.19 | 58.47 |---|test on test dataset |
-| Resnet101-v4 | 84.35| 59.97| 40.39| 53.06 |---|test on test dataset|  
-| GC_resnet101-v5.2 | 91.94| 79.45 |65.64 |69.94|---|test on test dataset|
-| SE_resnet101-v6 | 90.06 | 77.35 | 49.67 | 59.42 |---  | test on test dataset|
-| Resnet152-v7.1 | 91.95 | 79.46 | 65.98 | 70.14 | --- |
+| Resnet101-v1  |  91.14 |--- | ---| ---| ---|test on val&test dataset|
+| Resnet101-v2 | 91.53 | 79.81 | 63.67 | 68.52 | ---| test dataset|
+| GC_resnet101-v3 | 89.06| 55.06| 64.19 | 58.47 |---| test&val dataset |
+| Resnet101-v4 | 84.35| 59.97| 40.39| 53.06 |---| test dataset(deprecated)|  
+| GC_resnet101-v5.2 | 91.94| 79.45 |65.64 |69.94|---| a finetuned version on test dataset|
+| SE_resnet101-v6.2 | 91.95 | 79.45 | 65.64 | 69.99 |---  |test dataset|
+| Resnet152-v7.1 | 91.95 | 79.46 | 65.98 | 70.14 | --- | test dataset|
+| Densenet121-v8| 91.60 | 79.23 | 65.40 | 69.77 | --- | test dataset |
+| SGE_resnet101-v9 | 91.60 | 79.23 | 65.40 | 69.77| ---|test dataset |
+| SK_resnet101-v10 | 91.93 | 79.69 | 65.54 | 69.95| -- | test dataset|
 
 More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/result/).
 
@@ -44,7 +50,7 @@ More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/
 
 Priority:
 
-- [ ] Try more famous models, such as ~~ResNet101~~, DenseNet, ResNeXt, ~~SENet~~, ~~GCNet~~.(in processing)
+- [ ] Try more famous models, such as ~~ResNet101~~, ~~DenseNet~~, ~~SKNet~~, ~~SGENet~~, ~~SENet~~, ~~GCNet~~.(in processing)
 - [ ] Customize the network structure for better performance.
 - [ ] Open camera of laptop and real-time analyis.
 - [ ] Train a model on different datasets for more attributes.
@@ -67,7 +73,6 @@ Done:
 - [x] Save and load model.
 - [x] More detailed analysis about the experiment results.
 - [x] Parse the input script command.
-- [ ] 
 More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/DailyNote.md)
 
 ## Problems

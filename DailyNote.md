@@ -7,7 +7,7 @@ Some notes, summary or ideas on the process of learning with unfixed format in e
 (19.05.27~19.06.02)
 
 * train the best model on resnet152, gc_resnet101.
-* 
+* train the new and better network: sknet, sgenet.
 
 ## Week13
 
@@ -18,7 +18,6 @@ Some notes, summary or ideas on the process of learning with unfixed format in e
 * finetune existing models(gc_resnet101, resnet101, senet101)
 * read papers related to face attribute analysis.
 * to rebuild the state of the art methods FAN network.
-
 
 ## Week12
 
