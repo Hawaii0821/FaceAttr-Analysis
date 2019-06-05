@@ -5,8 +5,7 @@ import numpy as np
 from numpy import random
 import os
 import torch
-import cv2 
-import 
+# import cv2 
 
 def timeSince(since):
     """
@@ -82,8 +81,4 @@ def show_mean_test_acc(test_df, save_path):
     plt.xticks(rotation=90)
     plt.grid(True)
     plt.savefig(save_path)
-    
-    print("average test accuracy: {}".format(sum(test_acc_list)/len(test_acc_list))
-
-
-
+    print("average test accuracy: {}".format(sum(test_acc_list)/len(test_acc_list)))

@@ -9,10 +9,10 @@ from utils import seed_everything
 
 parser = argparse.ArgumentParser(description='FaceAtrr')
 parser.add_argument('--model_type', choices=['Resnet101','Resnet152','gc_resnet101','se_resnet101', 
-'densenet121', 'sge_resnet101', 'sk_resnet101'], default='Resnet101')
+'densenet121', 'sge_resnet101', 'sk_resnet101'], default='Resnet152')
 parser.add_argument('--batch_size', default=128, type=int, help='batch_size')
 parser.add_argument('--epoches', default=100, type=int, help='epoches')
-parser.add_argument('--learning_rate', default=1e-3, type=float, help='learning_rate')
+parser.add_argument('--learning_rate', default=1e-2, type=float, help='learning_rate')
 parser.add_argument('--momentum', default=0.9, type=float, help='momentum')
 parser.add_argument('--optim_type', choices=['SGD','Adam'], default='SGD')
 parser.add_argument('--pretrained', action='store_true', default=True)
@@ -42,9 +42,24 @@ if __name__ == "__main__":
                     exp_version=exp_version)
     try:
         solver.fit(model_path=model_path)
-        solver.test_speed(256)
 
-    except KeyboardInterrupt:
+        # test speed
+        """
+        model_path = [
+            "./result/v2-Resnet101-best_model_params.pth",
+            "./result/v2-Resnet101-best_model_params.pth",
+            "./result/v5.2-gc_resnet101-best_model_params.pth",
+            "./result/v6.2-se_resnet101-best_model_params.pth",
+            "./result/v7.1-Resnet152-best_model_params.pth",
+            "./result/v8-densenet121-best_model_params.pth",
+            "./result/v9-sge_resnet101-best_model_params.pth",
+            "./result/v10-sk_resnet101-best_model_params.pth",
+        ]
+        for path in  model_path:
+            solver.test_speed(1, path)
+        """
+        
+    except KeyboardInterrupt or InterruptedError:
         print("early stop...")
         print("save the model dict....")
         solver.save_model_dict(exp_version+"_"+model_path + "_earlystop.pth")

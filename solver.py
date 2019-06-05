@@ -25,7 +25,8 @@ from Module.data_augmentation import *
 
 class Solver(object):
     
-    def __init__(self, epoches, batch_size, learning_rate, model_type, optim_type, momentum, pretrained, loss_type, exp_version):
+    def __init__(self, epoches, batch_size, learning_rate, model_type, 
+        optim_type, momentum, pretrained, loss_type, exp_version):
 
         self.epoches = epoches 
         self.batch_size = batch_size
@@ -56,8 +57,7 @@ class Solver(object):
     def build_model(self, model_type, pretrained):
         """Here should change the model's structure""" 
         self.model = FaceAttrModel(model_type, pretrained, self.selected_attrs).to(self.device).to(self.device)
-
-
+        
     def create_optim(self, optim_type):
         scheduler = None
         if optim_type == "Adam":
@@ -336,22 +336,30 @@ class Solver(object):
             return pred_dict  # return the predicted positive attributes dict and the probability.
 
 
-    def test_speed(self, image_num=256):
+    def test_speed(self, image_num=256, model_path=""):
+        if model_path  is not "":
+            self.model.load_state_dict(torch.load(model_path))
+            print("You load the model params: {}".format(model_path))
+
         self.model.eval()
+
         with torch.no_grad():
+            self.set_transform(mode="test")
             self.test_loader = get_loader(image_dir = self.image_dir, 
                                     attr_path = self.attr_path, 
                                     selected_attrs = self.selected_attrs,
                                     mode="test", batch_size=image_num, transform=self.transform)
             
             for idx, samples in enumerate(self.test_loader):
-                start_time = time.time()
                 images, labels = samples
                 images = images.to(self.device)
                 labels = torch.stack(labels).t().tolist()
+                start_time = time.time()
                 outputs = self.model(images)
                 end_time = time.time()
 
                 if idx == 0:
-                    images_per_sec = image_num / (end_time - start_time)
-                    print("You test {} images. The speed is {} images / second.".format(image_num, images_per_sec))
+                    speed = image_num / (end_time - start_time)
+                    print("You test {} images. The cost time is {}. The speed is {} images/s.".format(image_num,(end_time - start_time),speed))
+                    print("---------------------------------------------------------")
+                    break

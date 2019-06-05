@@ -59,6 +59,7 @@ size_average = False
 # -------------- Attribute configuration --------- #
 
 # every row has 5 attributes.
+"""
 all_attrs = ['5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Eyes', 'Bald', 
             'Bangs', 'Big_Lips', 'Big_Nose','Black_Hair', 'Blond_Hair',
             'Blurry', 'Brown_Hair', 'Bushy_Eyebrows', 'Chubby', 'Double_Chin', 
@@ -67,6 +68,12 @@ all_attrs = ['5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Ey
             'Oval_Face', 'Pale_Skin', 'Pointy_Nose', 'Receding_Hairline', 'Rosy_Cheeks', 
             'Sideburns', 'Smiling', 'Straight_Hair', 'Wavy_Hair', 'Wearing_Earrings', 
             'Wearing_Hat','Wearing_Lipstick', 'Wearing_Necklace', 'Wearing_Necktie', 'Young' 
+]
+"""
+
+all_attrs = ['Attractive','Bald', 'Bangs', 'Black_Hair','Blond_Hair','Brown_Hair', 'Chubby', 'Double_Chin', 
+            'Eyeglasses', 'Goatee', 'Gray_Hair','Male', 'Mustache', 'Pale_Skin', 'Pointy_Nose', 'Receding_Hairline',  
+            'Sideburns', 'Smiling', 'Wearing_Hat'
 ]
 
 # To be optimized
