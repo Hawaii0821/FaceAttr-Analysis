@@ -8,7 +8,7 @@
 * 202599张人脸图片
 * 40个属性标记
 * 人脸bbox标注框
-* 5个人脸特征点坐标 
+* 5个人脸特征点坐标
 
 由香港中文大学开放提供，网址在[这里](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)
 
