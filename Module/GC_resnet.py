@@ -22,7 +22,7 @@ def last_zero_init(m):
 class GCLayer(nn.Module):
 
     def __init__(self, inplanes, planes, pool, fusions):
-        super(ContextBlock2d, self).__init__()
+        super(GCLayer, self).__init__()
         assert pool in ['avg', 'att']
         assert all([f in ['channel_add', 'channel_mul'] for f in fusions])
         assert len(fusions) > 0, 'at least one fusion should be used'
@@ -113,7 +113,7 @@ class GCBasicBlock(nn.Module):
     expansion = 1
 
     def __init__(self, inplanes, planes, stride=1, downsample=None, reduction=16):
-        super(SEBasicBlock, self).__init__()
+        super(GCBasicBlock, self).__init__()
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
@@ -150,12 +150,12 @@ class GCBottleneck(nn.Module):
         self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
-                               padding=1, bias=False)
+                                padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
         self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
         self.bn3 = nn.BatchNorm2d(planes * 4)
         self.relu = nn.ReLU(inplace=True)
-        self.gc = GCLayer(planes * 4, reduction)
+        self.gc = GCLayer(planes * 4, reduction, pool='avg', fusions=['channel_add', 'channel_mul'])
         self.downsample = downsample
         self.stride = stride
 

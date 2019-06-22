@@ -13,6 +13,7 @@ import pandas as pd
 
 import copy
 import time
+import json
 
 from CelebA import get_loader
 import torch.nn.functional as F
@@ -21,7 +22,6 @@ from FaceAttr_baseline_model import FaceAttrModel
 from Module.focal_loss import FocalLoss
 import config as cfg
 
-from Module.data_augmentation import *
 
 class Solver(object):
     
@@ -67,7 +67,7 @@ class Solver(object):
             self.optim_ = optim.SGD(self.model.parameters(), lr = self.learning_rate, momentum = self.momentum)
             self.scheduler = optim.lr_scheduler.MultiStepLR(self.optim_, [30,80], gamma=0.1)
         else:
-             raise ValueError("no such a "+ optim_type + "optim, you can try Adam or SGD.")
+            raise ValueError("no such a "+ optim_type + "optim, you can try Adam or SGD.")
 
     def set_transform(self, mode):
         transform = []
@@ -82,8 +82,8 @@ class Solver(object):
         # the input image should be resized as 224 * 224 for resnet.
         transform.append(transforms.Resize(size=(224, 224))) # test no resize operation.
         transform.append(transforms.ToTensor())
-        transform.append(transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225]))
+        transform.append(transforms.Normalize(mean=[0.5, 0.5, 0.5],
+                                std=[0.5, 0.5, 0.5]))
         
         transform = transforms.Compose(transform)
         self.transform = transform
@@ -116,7 +116,7 @@ class Solver(object):
         Return: the average trainging loss value of this epoch
         """
         self.model.train()
-	# self.scheduler.step()
+
         self.set_transform("train")
 
         # to avoid loading dataset repeatedly
@@ -129,6 +129,8 @@ class Solver(object):
         temp_loss = 0.0
             
         for batch_idx, samples in enumerate(self.train_loader):
+            self.scheduler.step()
+
             images, labels = samples
             labels = torch.stack(labels).t() 
             images= images.to(self.device)
@@ -159,7 +161,7 @@ class Solver(object):
         self.model.eval()
         self.set_transform(mode)
         data_loader = None
-       
+
         if self.validate_loader == None and mode == "validate":
             self.validate_loader = get_loader(image_dir = self.image_dir, 
                                     attr_path = self.attr_path, 
@@ -205,7 +207,7 @@ class Solver(object):
                 images = images.to(self.device)
                 labels = torch.stack(labels).t().tolist()
                 outputs = self.model(images)
-               
+
                 for i in range(self.batch_size):
                     for j, attr in enumerate(self.selected_attrs):
                         pred = outputs[i].data[j]
@@ -263,7 +265,7 @@ class Solver(object):
             print("The model has loaded the state dict on {}".format(model_path))
 
         train_losses = []
-      
+
         best_model_wts = copy.deepcopy(self.model.state_dict())
         best_acc = 0.0
         self.scheduler.step()
@@ -317,6 +319,17 @@ class Solver(object):
         test_confusion_matrix_csv = pd.DataFrame(confusion_matrix_dict, index=self.selected_attrs)
         test_confusion_matrix_csv.to_csv("./result/" + self.exp_version + '-' + self.model_type + '-confusion_matrix.csv', index=self.selected_attrs)
 
+        report_dict = {}
+        report_dict["model"] = self.model_type
+        report_dict["version"] = self.exp_version
+        report_dict["mean_attributes_accuracy"] = mean_attributes_acc
+        report_dict["speed"] = self.test_speed()
+        report_json = json.dumps(report_dict)
+        report_file = open("./result/" + self.exp_version + "-" + self.model_type + "-report.json", 'w')
+        report_file.write(report_json)
+        report_file.close()
+        print(report_dict)
+
         
     def predict(self, image):
         if not self.LOADED:
@@ -336,7 +349,7 @@ class Solver(object):
             return pred_dict  # return the predicted positive attributes dict and the probability.
 
 
-    def test_speed(self, image_num=256, model_path=""):
+    def test_speed(self, image_num=1, model_path=""):
         if model_path  is not "":
             self.model.load_state_dict(torch.load(model_path))
             print("You load the model params: {}".format(model_path))
@@ -362,4 +375,5 @@ class Solver(object):
                     speed = image_num / (end_time - start_time)
                     print("You test {} images. The cost time is {}. The speed is {} images/s.".format(image_num,(end_time - start_time),speed))
                     print("---------------------------------------------------------")
+                    return end_time-start_time
                     break

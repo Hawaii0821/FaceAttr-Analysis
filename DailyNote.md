@@ -2,6 +2,11 @@
 
 Some notes, summary or ideas on the process of learning with unfixed format in every week.
 
+## Week15 ~ 17
+
+- build the web app with face detection API and face analysis model based on django.
+- try other models: cbam_resnet, shufflenetv2...
+
 ## Week14
 
 (19.05.27~19.06.02)

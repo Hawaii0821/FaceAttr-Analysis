@@ -6,6 +6,8 @@ from Module.GC_resnet import *
 from Module.SE_resnet import * 
 from Module.resnet_sge import * 
 from Module.resnet_sk import * 
+from Module.shuffle_netv2 import *
+from Module.resnet_cbam import *
 
 """
 Adopt the pretrained resnet model to extract feature of the feature
@@ -18,16 +20,32 @@ class FeatureExtraction(nn.Module):
             self.model = models.resnet101(pretrained=pretrained)
         elif model_type == "Resnet152":
             self.model = models.resnet152(pretrained=pretrained)
+        elif model_type == "Resnet50":
+            self.model = models.resnet50(pretrained=pretrained)
         elif model_type == "densenet121":
             self.model = models.densenet121(pretrained=pretrained)
         elif model_type == "gc_resnet101":
             self.model = gc_resnet101(2)
+        elif model_type == "gc_resnet50":
+            self.model = gc_resnet50(2, pretrained=pretrained)
         elif model_type == 'se_resnet101':
-            self.model = se_resnet101(2)  # the param 2 makes no sense. because we will cut the final fc layers.
+            self.model = se_resnet101(2)
+        elif model_type == "se_resnet50":
+            self.model = se_resnet50(2, pretrained=pretrained)
         elif model_type == 'sge_resnet101':
             self.model = sge_resnet101(pretrained=pretrained)
+        elif model_type == "sge_resnet50":
+            self.model = sge_resnet50(pretrained=pretrained)
         elif model_type == "sk_resnet101":
             self.model = sk_resnet101(pretrained=pretrained)
+        elif model_type == "sk_resnet50":
+            self.model = sk_resnet50(pretrained=pretrained)
+        elif model_type == "shuffle_netv2":
+            self.model = shufflenetv2_1x(pretrained=pretrained)
+        elif model_type == "cbam_resnet101":
+            self.model = cbam_resnet101(pretrained=pretrained)
+        elif model_type == "cbam_resnet50":
+            self.model = cbam_resnet50(pretrained=pretrained)
         print("Has loaded the model {}".format(model_type))
         self.model = nn.Sequential(*list(self.model.children())[:-1])
     def forward(self, image):
@@ -47,7 +65,7 @@ class FeatureClassfier(nn.Module):
         self.fc_set = {}
 
         self.fc = nn.Sequential(
-            nn.Linear(512, 512),
+            nn.Linear(2048, 512),
             nn.ReLU(True),
             nn.Dropout(p=0.5),
             nn.Linear(512, 128),
@@ -60,7 +78,6 @@ class FeatureClassfier(nn.Module):
 
 
     def forward(self, x):
-        #result_set = []
         x = x.view(x.size(0), -1)  # flatten
         res = self.fc(x)
         res = self.sigmoid(res)
@@ -73,7 +90,7 @@ conbime the extraction and classfier
 class FaceAttrModel(nn.Module):
     def __init__(self, model_type, pretrained, selected_attrs):
         super(FaceAttrModel, self).__init__()
-        self.featureExtractor = FeatureExtraction(model_type, pretrained)
+        self.featureExtractor = FeatureExtraction(pretrained, model_type)
         self.featureClassfier = FeatureClassfier(selected_attrs)
     
     def forward(self, image):
