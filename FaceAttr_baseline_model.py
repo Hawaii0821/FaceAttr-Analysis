@@ -2,12 +2,12 @@ from __future__ import print_function, division
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
-from Module.GC_resnet import *
-from Module.SE_resnet import * 
-from Module.resnet_sge import * 
-from Module.resnet_sk import * 
-from Module.shuffle_netv2 import *
-from Module.resnet_cbam import *
+# from backbone.GC_resnet import *
+from backbone.SE_resnet import * 
+from backbone.resnet_sge import * 
+from backbone.resnet_sk import * 
+from backbone.shuffle_netv2 import *
+from backbone.resnet_cbam import *
 
 """
 Adopt the pretrained resnet model to extract feature of the feature
@@ -15,7 +15,8 @@ Adopt the pretrained resnet model to extract feature of the feature
 class FeatureExtraction(nn.Module):
     def __init__(self, pretrained, model_type = "Resnet18"):
         super(FeatureExtraction, self).__init__()
-        self.model = models.resnet18(pretrained=pretrained)   
+        if model_type == "Resnet18":
+            self.model = models.resnet18(pretrained=pretrained)   
         if model_type == "Resnet101":
             self.model = models.resnet101(pretrained=pretrained)
         elif model_type == "Resnet152":
@@ -65,7 +66,7 @@ class FeatureClassfier(nn.Module):
         self.fc_set = {}
 
         self.fc = nn.Sequential(
-            nn.Linear(2048, 512),
+            nn.Linear(512, 512),
             nn.ReLU(True),
             nn.Dropout(p=0.5),
             nn.Linear(512, 128),

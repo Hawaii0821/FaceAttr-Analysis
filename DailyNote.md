@@ -170,5 +170,3 @@ The attributes whose accuracy is above 0.98 are:
 
 - A simple analysis note in `CelebA_analysis.md`
 - A simple visualzation of every attributes' sample numbers in `analysis_attr.py`.
-
-

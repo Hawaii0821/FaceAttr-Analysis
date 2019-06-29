@@ -1,10 +1,11 @@
 import time
-import matplotlib.pyplot as plt
 import math 
 import numpy as np
 from numpy import random
 import os
 import torch
+import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 # import cv2 
 
 def timeSince(since):

@@ -69,7 +69,7 @@ if __name__ == "__main__":
             if k == "F1":
                 f_list.append(v)
 
-    drawPRCurve(model_list, p_list, r_list, "pr_curve");
-    drawBarPlot(model_list, acc_list, "accuracy/%",  "acc_curve","The accuracy curve", "accuracy")
-    drawBarPlot(model_list, f_list,"F1/%", "f1_curve","The F1 curve", "f1")
+    drawPRCurve(model_list, p_list, r_list, "Precision-Recall Scatter");
+    drawBarPlot(model_list, acc_list, "accuracy/%",  "acc_curve","The model's accuracy", "accuracy")
+    drawBarPlot(model_list, f_list,"F1/%", "f1_curve","The model's F1 ", "f1")
     

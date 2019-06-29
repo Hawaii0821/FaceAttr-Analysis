@@ -26,18 +26,22 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 ### Our Work
 
-| plan | avearage accuracy(%)| macro-precision(%) | macro-recall(%) | macro-F1(%) | speed(pictures/s)(batch_size=1)| comment |
+![](data_analysis/acc_curve.png)
+![](data_analysis/pr_curve.png)
+![](data_analysis/f1_curve.png)
+
+
+| plan | avearage accuracy(%)| macro-precision(%) | macro-recall(%) | macro-F1(%) | 
 | ---- | -----| ---- | ----- | ----- | --- |  ---- |
-| Resnet101-v2.1 | 91.53 | 79.81 | 63.67 | 68.52 | 208 | test dataset|
-| GC_resnet101-v5.2 | 91.94| 79.45 |65.64 |69.94|206| a finetuned version on test dataset|
-| SE_resnet101-v6.2 | 91.95 | 79.45 | 65.64 | 69.99 |185|test dataset|
-| Resnet152-v7.1 | 91.95 | 79.46 | 65.98 | 70.14 | 206 | test dataset|
-| Densenet121-v8| 91.60 | 79.23 | 65.40 | 69.77 | 195 | test dataset |
-| SGE_resnet101-v9 | 91.60 | 79.23 | 65.40 | 69.77| 216 |test dataset|
-| SK_resnet101-v10 | 91.93 | 79.69 | 65.54 | 69.95|185| test dataset|
-| Resnet50-v13 | 91.53 | 78.12 | 65.32 | 69.25 | ... | test dataset|
-| cbam_resnet101-v14 | 91.42 | 78.12 | 65.32 | 69.24| ... | ... |
-| shuffle_netv2 - v15 | 91.68 | 79.52 | 62.89 | 67.87|...|...|
+| Resnet101-v2.1 | 91.53 | 79.81 | 63.67 | 68.52 |
+| GC_resnet101-v5.2 | 91.94| 79.45 |65.64 |69.94|
+| SE_resnet101-v6.2 | 91.95 | 79.45 | 65.64 | 69.99 |
+| Resnet152-v7.1 | 91.95 | 79.46 | 65.98 | 70.14 |
+| Densenet121-v8| 91.64 | 79.25 | 65.42 | 69.81 |
+| SGE_resnet101-v9 | 91.60 | 79.23 | 65.40 | 69.77|
+| SK_resnet101-v10 | 91.93 | 79.69 | 65.54 | 69.95|
+| Resnet50-v13 | 91.53 | 78.12 | 65.32 | 69.25 |
+| cbam_resnet101-v14 | 91.42 | 78.12 | 65.32 | 69.24|
 
 More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/result/).
 
