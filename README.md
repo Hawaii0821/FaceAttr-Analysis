@@ -30,6 +30,18 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 ![](data_analysis/pr_curve.png)
 ![](data_analysis/f1_curve.png)
 
+Some explanable results for the model by using Grad-CAM.
+
+![Bald](explain/001514-4.jpg)
+
+![Eyeglasses](explain/000019-15.jpg)
+![Eyeglasses](explain/000726-15.jpg)
+![Eyeglasses](explain/001457-15.jpg)
+
+![Male](explain/000019-20.jpg)
+![Male](explain/001514-20.jpg)
+
+![hat](explain/001735-35.jpg)
 
 | plan | avearage accuracy(%)| macro-precision(%) | macro-recall(%) | macro-F1(%) | 
 | ---- | -----| ---- | ----- | ----- | --- |  ---- |
@@ -52,19 +64,11 @@ More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/
 
 ## Simple Dashbord
 
-Priority:
+ToDo:
 
-- [x] Try more famous models, such as ~~ResNet101~~, ~~DenseNet~~, ~~SKNet~~, ~~SGENet~~, ~~SENet~~, ~~GCNet~~.(in processing)
-- [x] Customize the network structure for better performance.
 - [ ] upload images in html and return the analysis result.
 - [ ] open pc camera, detect face and return the predicted result.
 - [ ] search face attributes and return the related images.
-
-Choice:
-
-- [ ] Visualization with [tensorboard](https://github.com/lanpa/tensorboardX) or [netron](https://github.com/lutzroeder/netron).
-- [ ] Train on wild images instead of precroped images to get a higher performance in practice.
-- [ ] Multi-task learning: face localization, alignment and analysis. (challenging)
 
 Done:
 
@@ -75,6 +79,8 @@ Done:
 - [x] Save and load model.
 - [x] More detailed analysis about the experiment results.
 - [x] Parse the input script command.
+- [x] Try more famous models, such as ~~ResNet101~~, ~~DenseNet~~, ~~SKNet~~, ~~SGENet~~, ~~SENet~~, ~~GCNet~~.
+- [x] Customize the network structure for better performance.
 More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/DailyNote.md)
 
 ## Usage
