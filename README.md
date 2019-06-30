@@ -26,36 +26,40 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 ### Our Work
 
+| Solution | average accuracy(%) | macro-precision(%) | macro-recall(%) | macro-F1(%) |
+| ---- | -----| ---- | ----- | ----- |
+| Resnet101 | 91.53 | **79.81** | 63.67 | 68.52 |
+| GCnet101 | 91.94| 79.45 |65.64 |69.94|
+| SEnet101 | **91.95** | 79.81 | **65.64** | **69.99** |
+| Densenet121| 91.64 | 79.25 | 65.42 | 69.81 |
+| SGEnet101 | 91.60 | 79.23 | 65.40 | 69.77|
+| SKnet101 | 91.93 | 79.69 | 65.54 | 69.95|
+| CBAMnet101 | 91.42 | 78.12 | 65.32 | 69.24|
+| Resnet152 | **91.95** | 79.46 | **65.98** | **70.14** |
+
+More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/result/).
+
 ![](data_analysis/acc_curve.png)
 ![](data_analysis/pr_curve.png)
 ![](data_analysis/f1_curve.png)
 
 Some explanable results for the model by using Grad-CAM.
 
-![Bald](explain/001514-4.jpg)
+Bald.
+![Bald](explain/001819-4.jpg)
 
-![Eyeglasses](explain/000019-15.jpg)
+
+
+Eyeglasses
 ![Eyeglasses](explain/000726-15.jpg)
 ![Eyeglasses](explain/001457-15.jpg)
 
+Female and Male
 ![Male](explain/000019-20.jpg)
 ![Male](explain/001514-20.jpg)
 
+Wear hat
 ![hat](explain/001735-35.jpg)
-
-| plan | avearage accuracy(%)| macro-precision(%) | macro-recall(%) | macro-F1(%) | 
-| ---- | -----| ---- | ----- | ----- | --- |  ---- |
-| Resnet101-v2.1 | 91.53 | 79.81 | 63.67 | 68.52 |
-| GC_resnet101-v5.2 | 91.94| 79.45 |65.64 |69.94|
-| SE_resnet101-v6.2 | 91.95 | 79.45 | 65.64 | 69.99 |
-| Resnet152-v7.1 | 91.95 | 79.46 | 65.98 | 70.14 |
-| Densenet121-v8| 91.64 | 79.25 | 65.42 | 69.81 |
-| SGE_resnet101-v9 | 91.60 | 79.23 | 65.40 | 69.77|
-| SK_resnet101-v10 | 91.93 | 79.69 | 65.54 | 69.95|
-| Resnet50-v13 | 91.53 | 78.12 | 65.32 | 69.25 |
-| cbam_resnet101-v14 | 91.42 | 78.12 | 65.32 | 69.24|
-
-More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/result/).
 
 ### State of the Art
 
@@ -64,9 +68,8 @@ More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/
 
 ## Simple Dashbord
 
-ToDo:
+Plan:
 
-- [ ] upload images in html and return the analysis result.
 - [ ] open pc camera, detect face and return the predicted result.
 - [ ] search face attributes and return the related images.
 
@@ -81,6 +84,8 @@ Done:
 - [x] Parse the input script command.
 - [x] Try more famous models, such as ~~ResNet101~~, ~~DenseNet~~, ~~SKNet~~, ~~SGENet~~, ~~SENet~~, ~~GCNet~~.
 - [x] Customize the network structure for better performance.
+- [x] upload images in html and return the analysis result.
+
 More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Analysis/blob/master/DailyNote.md)
 
 ## Usage

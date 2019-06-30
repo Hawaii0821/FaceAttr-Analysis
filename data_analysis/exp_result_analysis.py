@@ -29,9 +29,7 @@ def show_test_accuracy(acc_df, save_file_name):
     return sum(acc_list)/len(acc_list)
 
 def show_loss(loss_df, save_file_name):
-    # get accuracy
     loss_list = loss_df.iloc[:, -1].tolist()
-    # get attributes
     epoch_list = [i + 1 for i in range(len(loss_list))]
     plt.figure(figsize=(12, 8))
     plt.plot(epoch_list, loss_list, marker='o', color='b')
