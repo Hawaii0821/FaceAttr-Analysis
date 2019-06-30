@@ -15,7 +15,7 @@ def drawPRCurve(model_list, p_list, r_list, save_path):
     ax.grid(True)
     plt.xlabel("recall/%")
     plt.ylabel("precision/%")
-    plt.title("The PR curve")
+    plt.title("The precision and recall scatter")
     plt.xlim([63, 67])
     plt.ylim([79, 80])
     plt.savefig(save_path)
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     data = {
         "Resnet101": {"accuracy": 91.53, "precision": 79.81, "recall": 63.67, "F1": 68.52},
         "GCnet101": {"accuracy": 91.94, "precision": 79.45, "recall": 65.64, "F1": 68.94},
-        "SEnet101": {"accuracy": 91.95, "precision": 79.81, "recall": 66.64, "F1": 68.99},
+        "SEnet101": {"accuracy": 91.95, "precision": 79.81, "recall": 66.64, "F1": 69.99},
         "SGEnet101": {"accuracy": 91.60, "precision": 79.23, "recall": 65.40, "F1": 69.77},
         "SKnet101": {"accuracy": 91.93, "precision": 79.69, "recall": 65.54, "F1": 69.95},
         "CBAMnet101": {"accuracy": 91.42, "precision": 79.12, "recall": 65.32, "F1": 69.24},
@@ -69,7 +69,7 @@ if __name__ == "__main__":
             if k == "F1":
                 f_list.append(v)
 
-    drawPRCurve(model_list, p_list, r_list, "Precision-Recall Scatter");
-    drawBarPlot(model_list, acc_list, "accuracy/%",  "acc_curve","The model's accuracy", "accuracy")
-    drawBarPlot(model_list, f_list,"F1/%", "f1_curve","The model's F1 ", "f1")
+    drawPRCurve(model_list, p_list, r_list, "pr_scatter");
+    drawBarPlot(model_list, acc_list, "accuracy/%",  "acc_curve","The accuracy of models", "accuracy")
+    drawBarPlot(model_list, f_list,"F1/%", "f1_curve","The F1 of models", "f1")
     
