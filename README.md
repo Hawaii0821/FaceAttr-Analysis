@@ -20,7 +20,9 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 - [x] v8: densenet121
 - [x] v9: [SGE_resnet101](https://arxiv.org/pdf/1905.09646.pdf).
 - [x] V10: [SK_resnet101](https://arxiv.org/pdf/1903.06586.pdf).
-- [ ] v11: FAN(pix2pix/unet + dual-path network) from youtu search. Move to another [repo](https://github.com/JoshuaQYH/pytorch.FAN) to check.
+
+Some model's codes are from [PytorchInsight](https://github.com/implus/PytorchInsight).Thx!
+
 
 ## Experiment Result
 
