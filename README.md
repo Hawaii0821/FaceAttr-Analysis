@@ -21,7 +21,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 - [x] v9: [SGE_resnet101](https://arxiv.org/pdf/1905.09646.pdf).
 - [x] V10: [SK_resnet101](https://arxiv.org/pdf/1903.06586.pdf).
 
-Some model's codes are from [PytorchInsight](https://github.com/implus/PytorchInsight).Thx!
+Some model's codes are from [PytorchInsight](https://github.com/implus/PytorchInsight) and [pytorch.torchvision](https://pytorch.org/docs/stable/torchvision/models.html#classification).Thx!
 
 
 ## Experiment Result
