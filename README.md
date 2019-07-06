@@ -13,7 +13,7 @@ This repo is for the adavanced training on deeping learning with the purpose of 
 
 - [x] v1:resnet101 (self-defined fc + BCE loss with logits + average accuracy)
 - [x] v2:resnet101  (self-defined fc + BCE loss with logits + threshold rescaling (`from page 67,Machine Learning, Zhihua Zhou`) + average accracy + more metrics (recall, precision, TPR, FPR, F1 `from page 30-33,Machine Learning, Zhihua Zhou`))
-- [x] v3+v5: try GC_resnet101 after modifying label format and loss. 
+- [x] v3+v5: try GC_resnet101 after modifying label format and loss.
 - [x] v4: resnet101 + focal loss.
 - [x] v6: se_resnet101
 - [x] v7: resnet152
@@ -48,8 +48,6 @@ Some explanable results for the model by using Grad-CAM.
 Bald.
 ![Bald](explain/001819-4.jpg)
 
-
-
 Eyeglasses
 ![Eyeglasses](explain/000726-15.jpg)
 ![Eyeglasses](explain/001457-15.jpg)
@@ -67,11 +65,6 @@ Wear hat
 > The image is from this paper--[FAN,Youtu Search,](https://www.ijcai.org/proceedings/2018/102)
 
 ## Simple Dashbord
-
-Plan:
-
-- [ ] open pc camera, detect face and return the predicted result.
-- [ ] search face attributes and return the related images.
 
 Done:
 
@@ -92,6 +85,11 @@ More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Ana
 
 Open the `run.sh` file, read the main.py and you can see the running arguments of model.
 > bash run.sh
+Or:
+
+```shell
+nohup python main.py --model_type Resnet18 --batch_size 32 --epochs 128 --learning_rate 1e-3 --exp_version v1 &
+```
 
 ## Problems
 
