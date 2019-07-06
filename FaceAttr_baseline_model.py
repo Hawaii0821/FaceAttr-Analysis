@@ -9,6 +9,9 @@ from backbone.resnet_sk import *
 from backbone.shuffle_netv2 import *
 from backbone.resnet_cbam import *
 
+# you can add more models as you need.
+__SUPPORT_MODEL__ = ["Resnet18", "Resnet101", "densenet121", "se_resnet101", "se_resnet50"]
+
 """
 Adopt the pretrained resnet model to extract feature of the feature
 """
@@ -56,7 +59,7 @@ class FeatureExtraction(nn.Module):
 judge the attributes from the result of feature extraction
 """
 class FeatureClassfier(nn.Module):
-    def __init__(self, selected_attrs, output_dim = 1):
+    def __init__(self, selected_attrs,input_dim=512, output_dim = 1):
         super(FeatureClassfier, self).__init__()
 
         self.attrs_num = len(selected_attrs)
@@ -66,7 +69,7 @@ class FeatureClassfier(nn.Module):
         self.fc_set = {}
 
         self.fc = nn.Sequential(
-            nn.Linear(512, 512),
+            nn.Linear(input_dim, 512),
             nn.ReLU(True),
             nn.Dropout(p=0.5),
             nn.Linear(512, 128),
@@ -91,8 +94,12 @@ conbime the extraction and classfier
 class FaceAttrModel(nn.Module):
     def __init__(self, model_type, pretrained, selected_attrs):
         super(FaceAttrModel, self).__init__()
+        assert model_type in __SUPPORT_MODEL__
         self.featureExtractor = FeatureExtraction(pretrained, model_type)
-        self.featureClassfier = FeatureClassfier(selected_attrs)
+        if model_type == "Resnet18":
+            self.featureClassfier = FeatureClassfier(selected_attrs, input_dim=512)
+        else:
+            self.featureClassfier = FeatureClassfier(selected_attrs, input_dim=2048)
     
     def forward(self, image):
         features = self.featureExtractor(image)

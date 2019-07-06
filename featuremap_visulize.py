@@ -167,10 +167,21 @@ def visulize(model, target_layer_names, image_path, save_path, target_index):
     show_cam_on_image(img, mask, save_path)
 
 if __name__ == '__main__':
+    # the test image path
     image_path = "001735.jpg"
+
+    # the output image path
     save_path = "001735-35.jpg"
+
+    # the index of the target attributes. 35 denotes hearing_hat
     target_index = 35
+    
+    # define the model
     model = FaceAttrModel("Resnet18", pretrained=False, selected_attrs=cfg.selected_attrs)
+    
+    # load the model state dict, you should prepare the pretrained model.
     state_dict = torch.load("./result/resnet18.pth")
     model.load_state_dict(state_dict)
+
+    # visulize the 7'th part of the network. Why 7 ? You can print the state dict to watch more.
     visulize(model, ["7"], image_path, save_path, target_index)

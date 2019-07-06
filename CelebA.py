@@ -201,7 +201,7 @@ def test():
     transform.append(transforms.Resize(size=(224, 224)))
     transform.append(transforms.ToTensor())
     transform.append(transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225]))
+                                std=[0.229, 0.224, 0.225]))
     transform = transforms.Compose(transform)
     data_loader = get_loader(cfg.image_dir, cfg.attr_path, cfg.selected_attrs, 2, transform=transform)
 

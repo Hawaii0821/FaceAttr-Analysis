@@ -46,23 +46,27 @@ More detailed data can be seen in folder [\result](https://github.com/JoshuaQYH/
 Some explanable results for the model by using Grad-CAM.
 
 Bald.
+
 ![Bald](explain/001819-4.jpg)
 
 Eyeglasses
+
 ![Eyeglasses](explain/000726-15.jpg)
 ![Eyeglasses](explain/001457-15.jpg)
 
 Female and Male
+
 ![Male](explain/000019-20.jpg)
 ![Male](explain/001514-20.jpg)
 
 Wear hat
+
 ![hat](explain/001735-35.jpg)
 
 ### State of the Art
 
 ![State of the art](https://raw.githubusercontent.com/JoshuaQYH/blogImage/master/celeba.png)
-> The image is from this paper--[FAN,Youtu Search,](https://www.ijcai.org/proceedings/2018/102)
+> The image is from this paper--[FAN,Youtu Search, IJCAI 2018](https://www.ijcai.org/proceedings/2018/102)
 
 ## Simple Dashbord
 
@@ -83,12 +87,22 @@ More study notes on the [DailyNote.md](https://github.com/JoshuaQYH/FaceAttr-Ana
 
 ## Usage
 
+The pretrianed model `Resnet18` is availabel. Click [Google Drive](https://drive.google.com/open?id=1v0-Y-JMyuxHiJoWUcu9c58TCeyBKLOuD) .
+
 Open the `run.sh` file, read the main.py and you can see the running arguments of model.
 > bash run.sh
-Or:
+> 
+
+If you want to train and test model by yourself, you can run this command:
 
 ```shell
 nohup python main.py --model_type Resnet18 --batch_size 32 --epochs 128 --learning_rate 1e-3 --exp_version v1 &
+```
+
+If you want to visulize the model, you can download pretrianed model and see comments in main part in file `featuremap_visulize.py` for the usage, and just run:
+
+```shell
+python featuremap_visulize.py
 ```
 
 ## Problems
